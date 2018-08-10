@@ -1,0 +1,26 @@
+server:
+  port: 9001
+spring:
+  application:
+    name: pinyougou-sellergoods-service
+
+demo:
+  service:
+    version: 1.0.0
+dubbo:
+  scan:
+    basePackages: com.pinyougou.sellergoods.service.impl
+  application:
+    id: pinyougou-sellergoods-service
+    name: pinyougou-sellergoods-service
+    # qos-port: 20001  可以不写
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 20881
+    threads: 10
+  registry:
+    address: 192.168.200.102:2181
+    id: my-registry1
+    protocol: zookeeper
+    timeout: 30000

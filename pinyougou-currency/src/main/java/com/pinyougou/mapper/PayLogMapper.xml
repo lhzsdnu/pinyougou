@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pinyougou.mapper.PayLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pinyougou.entity.PayLog">
+        <id column="out_trade_no" property="outTradeNo" />
+        <result column="create_time" property="createTime" />
+        <result column="pay_time" property="payTime" />
+        <result column="total_fee" property="totalFee" />
+        <result column="user_id" property="userId" />
+        <result column="transaction_id" property="transactionId" />
+        <result column="trade_state" property="tradeState" />
+        <result column="order_list" property="orderList" />
+        <result column="pay_type" property="payType" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        out_trade_no, create_time, pay_time, total_fee, user_id, transaction_id, trade_state, order_list, pay_type
+    </sql>
+
+</mapper>

@@ -1,0 +1,21 @@
+demo:
+  service:
+    version: 1.0.0
+dubbo:
+  application:
+    id: pinyougou-manager-web
+    name: pinyougou-manager-web
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 20081
+  registry:
+    address: 192.168.200.102:2181
+    id: my-consumer1
+    protocol: zookeeper
+    timeout: 30000
+server:
+  port: 9101
+spring:
+  application:
+    name: pinyougou-manager-web
