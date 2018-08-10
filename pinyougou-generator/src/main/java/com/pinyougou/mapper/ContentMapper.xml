@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pinyougou.mapper.ContentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pinyougou.entity.Content">
+        <id column="id" property="id" />
+        <result column="category_id" property="categoryId" />
+        <result column="title" property="title" />
+        <result column="url" property="url" />
+        <result column="pic" property="pic" />
+        <result column="status" property="status" />
+        <result column="sort_order" property="sortOrder" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, category_id, title, url, pic, status, sort_order
+    </sql>
+
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pinyougou.mapper.SeckillGoodsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pinyougou.entity.SeckillGoods">
+        <id column="id" property="id" />
+        <result column="goods_id" property="goodsId" />
+        <result column="item_id" property="itemId" />
+        <result column="title" property="title" />
+        <result column="small_pic" property="smallPic" />
+        <result column="price" property="price" />
+        <result column="cost_price" property="costPrice" />
+        <result column="seller_id" property="sellerId" />
+        <result column="create_time" property="createTime" />
+        <result column="check_time" property="checkTime" />
+        <result column="status" property="status" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="num" property="num" />
+        <result column="stock_count" property="stockCount" />
+        <result column="introduction" property="introduction" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, goods_id, item_id, title, small_pic, price, cost_price, seller_id, create_time, check_time, status, start_time, end_time, num, stock_count, introduction
+    </sql>
+
+</mapper>
