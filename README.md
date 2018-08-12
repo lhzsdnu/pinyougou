@@ -6,6 +6,9 @@
 类似代码和基础代码在自动生成的基础上修改而成
 
 数据库：mysql
+
 开发工具：IDEA
+
 注册中心：zookeeper，部署在centos7上
+
 监控：dubbo-admin，springboot打包，部署在centos7上
