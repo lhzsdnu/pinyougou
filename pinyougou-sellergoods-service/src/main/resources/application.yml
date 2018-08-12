@@ -6,7 +6,7 @@ spring:
 
 demo:
   service:
-    version: 1.0.0
+     version: 1.0.0
 dubbo:
   scan:
     basePackages: com.pinyougou.sellergoods.service.impl
@@ -21,6 +21,6 @@ dubbo:
     threads: 10
   registry:
     address: 192.168.200.102:2181
-    id: my-registry1
+    id: my-registry2
     protocol: zookeeper
     timeout: 30000

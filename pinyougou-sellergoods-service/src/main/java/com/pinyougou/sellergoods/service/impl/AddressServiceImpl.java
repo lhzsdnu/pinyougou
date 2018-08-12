@@ -21,7 +21,6 @@ import java.util.List;
  * @author 栾宏志
  * @since 2018-08-08
  */
-
 @Service(
         version = "${demo.service.version}",
         application = "${dubbo.application.id}",
