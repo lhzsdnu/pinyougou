@@ -5,6 +5,7 @@ import com.pinyougou.entity.Brand;
 import com.pinyougou.pojo.PageResult;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -67,5 +68,11 @@ public interface BrandService extends IService<Brand> {
      * @return
      */
     public PageResult findPage(Brand brand, int pageNum, int pageSize);
+
+    /**
+     * 品牌下拉框数据
+     */
+    List<Map> selectOptionList();
+
 
 }

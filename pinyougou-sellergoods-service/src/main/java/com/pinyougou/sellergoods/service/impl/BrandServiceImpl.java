@@ -12,6 +12,7 @@ import com.pinyougou.sellergoods.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -131,6 +132,14 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
 
         return result;
     }
+
+    /**
+     * 列表数据
+     */
+    public List<Map> selectOptionList() {
+        return brandMapper.selectOptionList();
+    }
+
 
 
 }

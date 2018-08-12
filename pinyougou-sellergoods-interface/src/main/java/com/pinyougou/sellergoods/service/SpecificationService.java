@@ -6,6 +6,7 @@ import com.pinyougou.pojo.PageResult;
 import com.pinyougou.sellergoods.grouppojo.TbSpecification;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -63,4 +64,10 @@ public interface SpecificationService extends IService<Specification> {
      * @return
      */
     public PageResult findPage(Specification specification, int pageNum, int pageSize);
+
+    /**
+     * 品牌下拉框数据
+     */
+    List<Map> selectOptionList();
+
 }

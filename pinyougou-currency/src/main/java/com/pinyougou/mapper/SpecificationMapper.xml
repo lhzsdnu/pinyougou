@@ -13,4 +13,9 @@
         id, spec_name
     </sql>
 
+    <select id="selectOptionList"  resultType="java.util.Map" >
+         select id,spec_name as text from tb_specification
+   </select>
+
+
 </mapper>

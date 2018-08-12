@@ -15,6 +15,7 @@ import com.pinyougou.sellergoods.service.SpecificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -167,5 +168,12 @@ public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper, S
         result.setRows(pageInfoList);
 
         return result;
+    }
+
+    /**
+     * 列表数据
+     */
+    public List<Map> selectOptionList() {
+        return specificationMapper.selectOptionList();
     }
 }
