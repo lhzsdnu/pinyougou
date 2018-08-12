@@ -6,8 +6,11 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.pinyougou.entity.Specification;
+import com.pinyougou.entity.SpecificationOption;
 import com.pinyougou.mapper.SpecificationMapper;
+import com.pinyougou.mapper.SpecificationOptionMapper;
 import com.pinyougou.pojo.PageResult;
+import com.pinyougou.sellergoods.grouppojo.TbSpecification;
 import com.pinyougou.sellergoods.service.SpecificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,6 +34,10 @@ public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper, S
 
     @Autowired
     private SpecificationMapper specificationMapper;
+
+    @Autowired
+    private SpecificationOptionMapper specificationOptionMapper;
+
 
     /**
      * 查询全部
@@ -65,8 +72,16 @@ public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper, S
      * 增加
      */
     @Override
-    public void add(Specification specification) {
-        specificationMapper.insert(specification);
+    public void add(TbSpecification tbSpecification) {
+        //插入规格
+        specificationMapper.insert(tbSpecification.getSpecification());
+        //循环插入规格选项
+        for (SpecificationOption specificationOption :
+                tbSpecification.getSpecificationOptionList()) {
+            //设置规格ID
+            specificationOption.setSpecId(tbSpecification.getSpecification().getId());
+            specificationOptionMapper.insert(specificationOption);
+        }
     }
 
 
@@ -74,8 +89,21 @@ public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper, S
      * 修改
      */
     @Override
-    public void update(Specification specification) {
-        specificationMapper.updateById(specification);
+    public void update(TbSpecification tbSpecification) {
+        //保存修改的规格
+        specificationMapper.updateById(tbSpecification.getSpecification());//保存规格
+        //删除原有的规格选项
+        Wrapper<SpecificationOption> entity = new EntityWrapper<SpecificationOption>();
+        entity.eq("spec_id", tbSpecification.getSpecification().getId());
+        specificationOptionMapper.delete(entity);
+
+        //循环插入规格选项
+        for (SpecificationOption specificationOption :
+                tbSpecification.getSpecificationOptionList()) {
+            specificationOption.setSpecId(tbSpecification.getSpecification().getId());
+            specificationOptionMapper.insert(specificationOption);
+        }
+
     }
 
     /**
@@ -85,9 +113,23 @@ public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper, S
      * @return
      */
     @Override
-    public Specification findOne(Long id) {
-        return specificationMapper.selectById(id);
+    public TbSpecification findOne(Long id) {
+        //查询规格
+        Specification specification = specificationMapper.selectById(id);
+
+        Wrapper<SpecificationOption> entity = new EntityWrapper<SpecificationOption>();
+        entity.eq("spec_id", id);
+        //查询规格选项列表
+        List<SpecificationOption> optionList = specificationOptionMapper.selectList(entity);
+
+        //构建组合实体类返回结果
+        TbSpecification spec = new TbSpecification();
+        spec.setSpecification(specification);
+        spec.setSpecificationOptionList(optionList);
+
+        return spec;
     }
+
 
     /**
      * 批量删除

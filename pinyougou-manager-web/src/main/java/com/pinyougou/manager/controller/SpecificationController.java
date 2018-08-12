@@ -5,6 +5,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.entity.Specification;
 import com.pinyougou.pojo.PageResult;
 import com.pinyougou.pojo.Result;
+import com.pinyougou.sellergoods.grouppojo.TbSpecification;
 import com.pinyougou.sellergoods.service.SpecificationService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,13 +54,13 @@ public class SpecificationController {
     /**
      * 增加
      *
-     * @param specification
+     * @param tbSpecification
      * @return
      */
     @RequestMapping("/add")
-    public Result add(@RequestBody Specification specification) {
+    public Result add(@RequestBody TbSpecification tbSpecification) {
         try {
-            specificationService.add(specification);
+            specificationService.add(tbSpecification);
             return new Result(true, "增加成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,13 +71,13 @@ public class SpecificationController {
     /**
      * 修改
      *
-     * @param specification
+     * @param tbSpecification
      * @return
      */
     @RequestMapping("/update")
-    public Result update(@RequestBody Specification specification) {
+    public Result update(@RequestBody TbSpecification tbSpecification) {
         try {
-            specificationService.update(specification);
+            specificationService.update(tbSpecification);
             return new Result(true, "修改成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,14 +85,9 @@ public class SpecificationController {
         }
     }
 
-    /**
-     * 获取实体
-     *
-     * @param id
-     * @return
-     */
+
     @RequestMapping("/findOne")
-    public Specification findOne(Long id) {
+    public TbSpecification findOne(Long id) {
         return specificationService.findOne(id);
     }
 

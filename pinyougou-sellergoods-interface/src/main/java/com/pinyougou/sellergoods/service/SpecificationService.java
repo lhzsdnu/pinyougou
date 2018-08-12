@@ -3,6 +3,7 @@ package com.pinyougou.sellergoods.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.pinyougou.entity.Specification;
 import com.pinyougou.pojo.PageResult;
+import com.pinyougou.sellergoods.grouppojo.TbSpecification;
 
 import java.util.List;
 
@@ -34,22 +35,17 @@ public interface SpecificationService extends IService<Specification> {
     /**
      * 增加
      */
-    public void add(Specification specification);
+    public void add(TbSpecification tbspecification);
 
+    /**
+     * 根据ID获取实体
+     */
+    public TbSpecification findOne(Long id);
 
     /**
      * 修改
      */
-    public void update(Specification specification);
-
-
-    /**
-     * 根据ID获取实体
-     *
-     * @param id
-     * @return
-     */
-    public Specification findOne(Long id);
+    public void update(TbSpecification tbSpecification);
 
 
     /**
