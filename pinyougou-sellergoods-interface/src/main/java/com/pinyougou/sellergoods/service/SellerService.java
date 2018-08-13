@@ -49,7 +49,7 @@ public interface SellerService extends IService<Seller> {
      * @param id
      * @return
      */
-    public Seller findOne(Long id);
+    public Seller findOne(String id);
 
 
     /**
@@ -67,4 +67,12 @@ public interface SellerService extends IService<Seller> {
      * @return
      */
     public PageResult findPage(Seller seller, int pageNum, int pageSize);
+
+    /**
+     * 更改状态
+     * @param sellerId
+     * @param status
+     */
+    public void updateStatus(String sellerId,String status);
+
 }

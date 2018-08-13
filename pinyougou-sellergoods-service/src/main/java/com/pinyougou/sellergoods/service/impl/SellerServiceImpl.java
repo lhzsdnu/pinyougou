@@ -11,6 +11,7 @@ import com.pinyougou.pojo.PageResult;
 import com.pinyougou.sellergoods.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,6 +67,9 @@ public class SellerServiceImpl extends ServiceImpl<SellerMapper, Seller> impleme
      */
     @Override
     public void add(Seller seller) {
+        seller.setStatus("0");
+        seller.setCreateTime(new Date());
+
         sellerMapper.insert(seller);
     }
 
@@ -85,7 +89,7 @@ public class SellerServiceImpl extends ServiceImpl<SellerMapper, Seller> impleme
      * @return
      */
     @Override
-    public Seller findOne(Long id) {
+    public Seller findOne(String id) {
         return sellerMapper.selectById(id);
     }
 
@@ -211,5 +215,13 @@ public class SellerServiceImpl extends ServiceImpl<SellerMapper, Seller> impleme
 
         return result;
     }
+
+    @Override
+    public void updateStatus(String sellerId, String status) {
+        Seller seller = sellerMapper.selectById(sellerId);
+        seller.setStatus(status);
+        sellerMapper.updateById(seller);
+    }
+
 
 }

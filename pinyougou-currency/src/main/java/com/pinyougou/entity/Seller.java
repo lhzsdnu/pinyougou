@@ -24,7 +24,7 @@ public class Seller extends Model<Seller> {
     /**
      * 用户ID
      */
-    @TableId(value = "seller_id", type = IdType.AUTO)
+    @TableId(value = "seller_id", type = IdType.INPUT)
     private String sellerId;
     /**
      * 公司名
