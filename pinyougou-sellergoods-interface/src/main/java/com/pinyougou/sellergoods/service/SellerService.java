@@ -75,4 +75,10 @@ public interface SellerService extends IService<Seller> {
      */
     public void updateStatus(String sellerId,String status);
 
+    /**
+     * 更改名字查找实体
+     * @param username
+     */
+    public Seller findByUserName(String username);
+
 }

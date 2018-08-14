@@ -223,5 +223,8 @@ public class SellerServiceImpl extends ServiceImpl<SellerMapper, Seller> impleme
         sellerMapper.updateById(seller);
     }
 
-
+    @Override
+    public Seller findByUserName(String username) {
+       return  sellerMapper.findByUserName(username);
+    }
 }
