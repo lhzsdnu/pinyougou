@@ -5,6 +5,7 @@ import com.pinyougou.entity.TypeTemplate;
 import com.pinyougou.pojo.PageResult;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -67,4 +68,10 @@ public interface TypeTemplateService extends IService<TypeTemplate> {
      * @return
      */
     public PageResult findPage(TypeTemplate typeTemplate, int pageNum, int pageSize);
+
+    /**
+     * 模板下拉框数据
+     */
+    List<Map> selectOptionList();
+
 }

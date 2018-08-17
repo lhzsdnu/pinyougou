@@ -57,7 +57,7 @@ public interface ItemCatService extends IService<ItemCat> {
      *
      * @param ids
      */
-    public void delete(Long[] ids);
+    public String  delete(Long[] ids);
 
     /**
      * 分页
@@ -67,5 +67,11 @@ public interface ItemCatService extends IService<ItemCat> {
      * @return
      */
     public PageResult findPage(ItemCat itemCat, int pageNum, int pageSize);
+
+    /**
+     * 根据上级ID返回列表
+     * @return
+     */
+    public List<ItemCat> findByParentId(Long parentId);
 
 }

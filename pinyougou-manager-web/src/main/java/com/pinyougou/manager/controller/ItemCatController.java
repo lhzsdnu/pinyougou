@@ -3,9 +3,12 @@ package com.pinyougou.manager.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.entity.ItemCat;
+import com.pinyougou.entity.MyItemCat;
+import com.pinyougou.entity.MyTypeTemplate;
 import com.pinyougou.pojo.PageResult;
 import com.pinyougou.pojo.Result;
 import com.pinyougou.sellergoods.service.ItemCatService;
+import com.pinyougou.sellergoods.service.TypeTemplateService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +31,11 @@ public class ItemCatController {
             application = "${dubbo.application.id}",
             registry = "${dubbo.registry.id}")
     private ItemCatService itemCatService;
+
+    @Reference(version = "${demo.service.version}",
+            application = "${dubbo.application.id}",
+            registry = "${dubbo.registry.id}")
+    private TypeTemplateService typeTemplateService;
 
     /**
      * 返回全部列表
@@ -85,14 +93,18 @@ public class ItemCatController {
     }
 
     /**
-     * 获取实体
+     * 根据id和text组装json字符串
      *
      * @param id
      * @return
      */
     @RequestMapping("/findOne")
-    public ItemCat findOne(Long id) {
-        return itemCatService.findOne(id);
+    public MyItemCat findOne(Long id) {
+        String text=typeTemplateService.findOne(itemCatService.findOne(id).getTypeId()).getName();
+        MyTypeTemplate typeTemplate=new MyTypeTemplate(String.valueOf(id),text);
+        MyItemCat itemCat=new MyItemCat(itemCatService.findOne(id).getName(),typeTemplate);
+        return  itemCat;
+
     }
 
     /**
@@ -104,8 +116,14 @@ public class ItemCatController {
     @RequestMapping("/delete")
     public Result delete(Long[] ids) {
         try {
-            itemCatService.delete(ids);
-            return new Result(true, "删除成功");
+            String str=itemCatService.delete(ids);
+            System.out.println(str);
+            if(str!=null&&!"".equals(str)){
+                return new Result(false, str);
+            }else{
+                return new Result(true, "删除成功");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return new Result(false, "删除失败");
@@ -124,5 +142,16 @@ public class ItemCatController {
     public PageResult search(@RequestBody ItemCat itemCat, int page, int rows) {
         return itemCatService.findPage(itemCat, page, rows);
     }
+
+    /**
+     * 根据上级ID查询列表
+     * @param parentId
+     * @return
+     */
+    @RequestMapping("/findByParentId")
+    public List<ItemCat> findByParentId(Long parentId){
+        return itemCatService.findByParentId(parentId);
+    }
+
 }
 

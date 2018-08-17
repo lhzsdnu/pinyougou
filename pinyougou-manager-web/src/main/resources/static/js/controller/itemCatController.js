@@ -1,5 +1,5 @@
  //控制层 
-app.controller('itemCatController' ,function($scope,$controller,itemCatService){
+app.controller('itemCatController' ,function($scope,$controller,itemCatService,typeTemplateService){
 	
 	$controller('baseController',{$scope:$scope});//继承
 	
@@ -21,29 +21,36 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService){
 			}			
 		);
 	}
-	
-	//查询实体 
+
+	//查询实体
 	$scope.findOne=function(id){				
 		itemCatService.findOne(id).success(
-			function(response){
-				$scope.entity= response;					
-			}
+            function(response){
+                $scope.entity = response;
+            }
 		);				
 	}
-	
+
+
 	//保存 
 	$scope.save=function(){				
-		var serviceObject;//服务层对象  				
+		var serviceObject;//服务层对象
+
+        var typeId=$scope.entity.typeId;
+        var id=typeId.id;
+        $scope.entity.typeId=id;
+
 		if($scope.entity.id!=null){//如果有ID
 			serviceObject=itemCatService.update( $scope.entity ); //修改  
 		}else{
-			serviceObject=itemCatService.add( $scope.entity  );//增加 
+            $scope.entity.parentId=$scope.parentId;//赋予上级ID
+			serviceObject=itemCatService.add($scope.entity);//增加
 		}				
 		serviceObject.success(
 			function(response){
 				if(response.success){
 					//重新查询 
-		        	$scope.reloadList();//重新加载
+                    $scope.findByParentId($scope.parentId);
 				}else{
 					alert(response.message);
 				}
@@ -58,9 +65,16 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService){
 		itemCatService.dele( $scope.selectIds ).success(
 			function(response){
 				if(response.success){
-					$scope.reloadList();//刷新列表
+                    //重新查询
+                    $scope.findByParentId($scope.parentId);
 					$scope.selectIds=[];
-				}						
+				}else{
+					alert(response.message);
+                    //重新查询
+                    $scope.findByParentId($scope.parentId);
+                    $scope.selectIds=[];
+				}
+
 			}		
 		);				
 	}
@@ -76,5 +90,49 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService){
 			}			
 		);
 	}
-    
+
+    $scope.parentId=0;//上级ID
+    //根据上级ID显示下级列表
+    $scope.findByParentId=function(parentId){
+        $scope.parentId=parentId;//记住上级ID
+        itemCatService.findByParentId(parentId).success(
+            function(response){
+                $scope.list=response;
+            }
+        );
+    }
+
+    $scope.grade=1;//默认为1级
+    //设置级别
+    $scope.setGrade=function(value){
+        $scope.grade=value;
+    }
+    //读取列表
+    $scope.selectList=function(p_entity){
+        if($scope.grade==1){//如果为1级
+            $scope.entity_1=null;
+            $scope.entity_2=null;
+        }
+        if($scope.grade==2){//如果为2级
+            $scope.entity_1=p_entity;
+            $scope.entity_2=null;
+        }
+        if($scope.grade==3){//如果为3级
+            $scope.entity_2=p_entity;
+        }
+        $scope.findByParentId(p_entity.id);	//查询此级下级列表
+    }
+
+    $scope.typeTemplateList={data:[]};//模板列表   select2控件要求的
+    //读取模板列表
+    $scope.findTypeTemplateList=function(){
+        typeTemplateService.selectOptionList().success(
+            function(response){
+                $scope.typeTemplateList={data:response};
+            }
+        );
+    }
+
+
+
 });	

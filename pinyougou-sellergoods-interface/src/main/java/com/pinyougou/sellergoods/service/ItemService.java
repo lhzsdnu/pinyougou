@@ -2,6 +2,7 @@ package com.pinyougou.sellergoods.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.pinyougou.entity.Item;
+import com.pinyougou.entity.ItemCat;
 import com.pinyougou.pojo.PageResult;
 
 import java.util.List;
@@ -67,4 +68,7 @@ public interface ItemService extends IService<Item> {
      * @return
      */
     public PageResult findPage(Item item, int pageNum, int pageSize);
+
+
+
 }

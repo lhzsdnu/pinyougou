@@ -93,10 +93,26 @@ public class ItemCatServiceImpl extends ServiceImpl<ItemCatMapper, ItemCat> impl
      * 批量删除
      */
     @Override
-    public void delete(Long[] ids) {
+    public String delete(Long[] ids) {
+
+        String str="";
+
         for (Long id : ids) {
-            itemCatMapper.deleteById(id);
+
+            //只能删除没有下级分类，后台校验
+            Wrapper<ItemCat> entity = new EntityWrapper<ItemCat>();
+            entity.eq("parent_Id",id);
+            List<ItemCat> list=itemCatMapper.selectList(entity);
+            if (list.size()>0){
+                System.out.println("存在下级分类，不可删除");
+                str=str+"分类ID："+id+" 存在下级分类，不可删除"+System.lineSeparator();
+            }else{
+                itemCatMapper.deleteById(id);
+            }
+
         }
+
+        return str;
     }
 
 
@@ -127,5 +143,18 @@ public class ItemCatServiceImpl extends ServiceImpl<ItemCatMapper, ItemCat> impl
 
         return result;
     }
+
+    /**
+     * 根据上级ID查询列表
+     */
+    @Override
+    public List<ItemCat> findByParentId(Long parentId) {
+
+        Wrapper<ItemCat> entity = new EntityWrapper<ItemCat>();
+        entity.eq("parent_Id",parentId);
+        return itemCatMapper.selectList(entity);
+
+    }
+
 
 }
