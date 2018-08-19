@@ -5,6 +5,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.entity.Goods;
 import com.pinyougou.pojo.PageResult;
 import com.pinyougou.pojo.Result;
+import com.pinyougou.sellergoods.grouppojo.TbGoods;
 import com.pinyougou.sellergoods.service.GoodsService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,7 +58,7 @@ public class GoodsController {
      * @return
      */
     @RequestMapping("/add")
-    public Result add(@RequestBody Goods goods) {
+    public Result add(@RequestBody TbGoods goods) {
         try {
             goodsService.add(goods);
             return new Result(true, "增加成功");

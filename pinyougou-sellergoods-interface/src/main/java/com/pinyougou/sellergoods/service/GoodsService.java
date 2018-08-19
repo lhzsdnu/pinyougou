@@ -3,6 +3,7 @@ package com.pinyougou.sellergoods.service;
 import com.baomidou.mybatisplus.service.IService;
 import com.pinyougou.entity.Goods;
 import com.pinyougou.pojo.PageResult;
+import com.pinyougou.sellergoods.grouppojo.TbGoods;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public interface GoodsService extends IService<Goods> {
     /**
      * 增加
      */
-    public void add(Goods goods);
+    public void add(TbGoods goods);
 
 
     /**

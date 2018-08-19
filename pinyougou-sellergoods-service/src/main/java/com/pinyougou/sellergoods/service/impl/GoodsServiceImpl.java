@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.pinyougou.entity.Goods;
+import com.pinyougou.mapper.GoodsDescMapper;
 import com.pinyougou.mapper.GoodsMapper;
 import com.pinyougou.pojo.PageResult;
+import com.pinyougou.sellergoods.grouppojo.TbGoods;
 import com.pinyougou.sellergoods.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,6 +34,10 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
     @Autowired
     private GoodsMapper goodsMapper;
+
+    @Autowired
+    private GoodsDescMapper goodsDescMapper;
+
 
     /**
      * 查询全部
@@ -66,8 +72,12 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      * 增加
      */
     @Override
-    public void add(Goods goods) {
-        goodsMapper.insert(goods);
+    public void add(TbGoods tbGoods) {
+        tbGoods.getGoods().setAuditStatus("0");//设置未申请状态
+        goodsMapper.insert(tbGoods.getGoods());
+        tbGoods.getGoodsDesc().setGoodsId(tbGoods.getGoods().getId());//设置ID
+        goodsDescMapper.insert(tbGoods.getGoodsDesc());//插入商品扩展数据
+
     }
 
 

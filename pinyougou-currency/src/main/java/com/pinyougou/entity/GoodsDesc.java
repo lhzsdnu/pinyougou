@@ -23,7 +23,7 @@ public class GoodsDesc extends Model<GoodsDesc> {
     /**
      * SPU_ID
      */
-    @TableId(value = "goods_id", type = IdType.AUTO)
+    @TableId(value = "goods_id", type = IdType.INPUT)
     private Long goodsId;
     /**
      * 描述

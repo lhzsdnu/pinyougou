@@ -50,9 +50,26 @@ app.controller('goodsController' ,function($scope,$controller,goodsService){
 			}		
 		);				
 	}
-	
-	 
-	//批量删除 
+
+    //保存
+    $scope.add=function(){
+        $scope.entity.goodsDesc.introduction=editor.html();
+        goodsService.add( $scope.entity  ).success(
+            function(response){
+                if(response.success){
+                    alert('保存成功');
+                    $scope.entity={};//清空处理
+                    editor.html('');//清空富文本编辑器
+                }else{
+                    alert(response.message);
+                }
+            }
+        );
+    }
+
+
+
+    //批量删除
 	$scope.dele=function(){			
 		//获取选中的复选框			
 		goodsService.dele( $scope.selectIds ).success(
