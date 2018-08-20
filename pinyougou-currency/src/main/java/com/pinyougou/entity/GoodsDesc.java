@@ -109,16 +109,5 @@ public class GoodsDesc extends Model<GoodsDesc> {
         return this.goodsId;
     }
 
-    @Override
-    public String toString() {
-        return "GoodsDesc{" +
-        ", goodsId=" + goodsId +
-        ", introduction=" + introduction +
-        ", specificationItems=" + specificationItems +
-        ", customAttributeItems=" + customAttributeItems +
-        ", itemImages=" + itemImages +
-        ", packageList=" + packageList +
-        ", saleService=" + saleService +
-        "}";
-    }
+
 }

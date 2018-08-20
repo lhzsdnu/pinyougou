@@ -9,7 +9,6 @@ import java.util.List;
  * @author 栾宏志
  * @since 2018-07-23
  */
-
 public class PageResult implements Serializable {
 
     private long total;//总记录数

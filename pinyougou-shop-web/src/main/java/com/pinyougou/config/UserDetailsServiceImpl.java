@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         //得到商家对象
         Seller seller = sellerService.findByUserName(username);
         if (seller != null) {
-            if (seller.getStatus().equals("1")) {
+            if ("1".equals(seller.getStatus())) {
                 return new User(username, seller.getPassword(), grantAuths);
             } else {
                 return null;

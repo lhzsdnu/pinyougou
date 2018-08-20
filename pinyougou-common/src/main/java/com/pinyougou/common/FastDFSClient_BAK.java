@@ -15,14 +15,14 @@ import org.csource.fastdfs.TrackerServer;
  * @author 栾宏志
  * @since 2018-07-22
  */
-public class FastDFSClient {
+public class FastDFSClient_BAK {
 
     private TrackerClient trackerClient = null;
     private TrackerServer trackerServer = null;
     private StorageServer storageServer = null;
     private StorageClient1 storageClient = null;
 
-    public FastDFSClient(String conf) throws Exception {
+    public FastDFSClient_BAK(String conf) throws Exception {
         if (conf.contains("classpath:")) {
             conf = conf.replace("classpath:", this.getClass().getResource("/").getPath());
         }

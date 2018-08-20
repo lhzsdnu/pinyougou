@@ -19,3 +19,16 @@ server:
 spring:
   application:
     name: pinyougou-shop-web
+  server:
+    MaxFileSize: 300MB
+    MaxRequestSize: 500MB
+    acceptorThreadCount: 4
+    compression: 'on'
+    connectionTimeout: 10000
+    maxConnections: 10000
+    maxSpareThreads: 50
+    maxThreads: 1000
+    minSpareThreads: 50
+    port: 9102
+    protocol: org.apache.coyote.http11.Http11Nio2Protocol
+    redirectPort: 443
