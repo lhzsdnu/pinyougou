@@ -74,4 +74,10 @@ public interface TypeTemplateService extends IService<TypeTemplate> {
      */
     List<Map> selectOptionList();
 
+    /**
+     * 返回规格列表
+     */
+    public List<Map> findSpecList(Long id);
+
+
 }

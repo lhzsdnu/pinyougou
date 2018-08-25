@@ -1,11 +1,14 @@
 package com.pinyougou.sellergoods.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.pinyougou.entity.SpecificationOption;
 import com.pinyougou.entity.TypeTemplate;
+import com.pinyougou.mapper.SpecificationOptionMapper;
 import com.pinyougou.mapper.TypeTemplateMapper;
 import com.pinyougou.pojo.PageResult;
 import com.pinyougou.sellergoods.service.TypeTemplateService;
@@ -32,6 +35,10 @@ public class TypeTemplateServiceImpl extends ServiceImpl<TypeTemplateMapper, Typ
 
     @Autowired
     private TypeTemplateMapper typeTemplateMapper;
+
+    @Autowired
+    private SpecificationOptionMapper specificationOptionMapper;
+
 
     /**
      * 查询全部
@@ -140,12 +147,37 @@ public class TypeTemplateServiceImpl extends ServiceImpl<TypeTemplateMapper, Typ
 
         return result;
     }
+
     /**
      * 列表数据
      */
+    @Override
     public List<Map> selectOptionList() {
         return typeTemplateMapper.selectOptionList();
     }
 
+    @Override
+    public List<Map> findSpecList(Long aLong) {
 
+        //根据模板id查询模板实体
+        TypeTemplate typeTemplate = typeTemplateMapper.selectById(aLong);
+        //模板对应的规格列表
+        //[{"id":27,"text":"网络"},{"id":32,"text":"机身内存"}]
+        String specIds = typeTemplate.getSpecIds();
+
+        List<Map> list = JSON.parseArray(specIds, Map.class);
+
+        for (Map map : list) {
+            //查询规格选项列表
+
+            //条件查询
+            Wrapper<SpecificationOption> entity = new EntityWrapper<SpecificationOption>();
+            entity.eq("spec_id", (Integer) map.get("id"));
+            List<SpecificationOption> options = specificationOptionMapper.selectList(entity);
+            map.put("options", options);
+        }
+
+        return list;
+
+    }
 }
