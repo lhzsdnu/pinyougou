@@ -56,6 +56,7 @@ app.controller('goodsController', function ($scope, $controller, goodsService, u
         $scope.entity.goodsDesc.introduction = editor.html();
         //转换列表
         $scope.entity.goodsDesc.itemImages = JSON.stringify($scope.entity.goodsDesc.itemImages);
+        $scope.entity.goodsDesc.customAttributeItems = JSON.stringify($scope.entity.goodsDesc.customAttributeItems);
         goodsService.add($scope.entity).success(
             function (response) {
                 if (response.success) {
@@ -160,17 +161,17 @@ app.controller('goodsController', function ($scope, $controller, goodsService, u
         );
     });
 
-//模板ID选择后  更新品牌列表
+    //模板ID选择后  更新品牌列表
     $scope.$watch('entity.goods.typeTemplateId', function (newValue, oldValue) {
-        alert(newValue)
         typeTemplateService.findOne(newValue).success(
             function (response) {
                 $scope.typeTemplate = response;//获取类型模板
                 $scope.typeTemplate.brandIds =
                     JSON.parse($scope.typeTemplate.brandIds);//品牌列表
+                $scope.entity.goodsDesc.customAttributeItems=
+                    JSON.parse( $scope.typeTemplate.customAttributeItems);//扩展属性
             }
         );
     });
-
 
 });	
