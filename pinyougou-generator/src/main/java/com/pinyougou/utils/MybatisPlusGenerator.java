@@ -17,7 +17,7 @@ public class MybatisPlusGenerator {
         GlobalConfig config = new GlobalConfig();
         config.setActiveRecord(true) // 是否支持AR模式
                 .setAuthor("栾宏志") // 作者
-                .setOutputDir("D:\\java_exercise\\IDEA-workspace\\pinyougouTo\\pinyougou-generator\\src\\main\\java") // 生成路径
+                .setOutputDir("D:\\java_exercise\\IDEA-workspace\\pinyougou\\pinyougou-generator\\src\\main\\java") // 生成路径
                 .setFileOverride(true)  // 文件覆盖
                 .setIdType(IdType.AUTO) // 主键策略
                 //自定义文件命名，注意 %s 会自动填充表实体属性！
