@@ -217,22 +217,26 @@ app.controller('goodsController', function ($scope, $controller, goodsService, u
             $scope.entity.goodsDesc.specificationItems.push(
                 {"attributeName": name, "attributeValue": [value]});
         }
-    }
+    };
 
     //创建SKU列表
     $scope.createItemList = function () {
-        //初始
-        $scope.entity.itemList = [{spec: {}, price: 0, num: 99999, status: '0', isDefault: '0'}];
+
         var items = $scope.entity.goodsDesc.specificationItems;
 
         if (items.length == 0) {
             $scope.entity.itemList = [];
+        }else{
+            //默认初始化初始
+            $scope.entity.itemList = [{spec: {}, price: 0, num: 99999, status: '0', isDefault: '0'}];
+            for (var i = 0; i < items.length; i++) {
+                $scope.entity.itemList = addColumn($scope.entity.itemList, items[i].attributeName, items[i].attributeValue);
+            }
         }
 
-        for (var i = 0; i < items.length; i++) {
-            $scope.entity.itemList = addColumn($scope.entity.itemList, items[i].attributeName, items[i].attributeValue);
-        }
-    }
+
+    };
+
     //添加列值
     addColumn = function (list, columnName, conlumnValues) {
         var newList = [];//新的集合
@@ -246,6 +250,5 @@ app.controller('goodsController', function ($scope, $controller, goodsService, u
         }
         return newList;
     }
-
 
 });
