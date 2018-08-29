@@ -5,6 +5,7 @@ dubbo:
   application:
     id: pinyougou-manager-web
     name: pinyougou-manager-web
+    qos-port: 22223
   protocol:
     id: dubbo
     name: dubbo

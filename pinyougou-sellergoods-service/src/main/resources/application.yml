@@ -13,7 +13,7 @@ dubbo:
   application:
     id: pinyougou-sellergoods-service
     name: pinyougou-sellergoods-service
-    # qos-port: 20001  可以不写
+    qos-port: 22224
   protocol:
     id: dubbo
     name: dubbo
