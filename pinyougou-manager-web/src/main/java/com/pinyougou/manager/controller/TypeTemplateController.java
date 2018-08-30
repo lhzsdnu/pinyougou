@@ -127,7 +127,7 @@ public class TypeTemplateController {
     }
 
     @RequestMapping("/selectOptionList")
-    public List<Map> selectOptionList(){
+    public List<Map> selectOptionList() {
         return typeTemplateService.selectOptionList();
     }
 

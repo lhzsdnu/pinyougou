@@ -127,13 +127,13 @@
 		      	<tr>
 		      		<td>关联品牌</td>
 		      		<td>
-						<input select2  select2-model="entity.brandIds" config="brandList" multiple placeholder="选择品牌（可多选）" class="form-control" type="text"/>
+						<input select2  select2-model="entity.brandIds1" config="brandList" multiple placeholder="选择品牌（可多选）" class="form-control" type="text"/>
 		      		</td>
 		      	</tr>
 		      	<tr>
 		      		<td>关联规格</td>
 		      		<td>
-						<input select2 select2-model="entity.specIds" config="specList" multiple placeholder="选择规格（可多选）" class="form-control" type="text"/>
+						   <input select2 select2-model="entity.specIds1" config="specList" multiple placeholder="选择规格（可多选）" class="form-control" type="text"/>
 
 					</td>
 		      	</tr>	
@@ -154,7 +154,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr ng-repeat="pojo in entity.customAttributeItems">
+								<tr ng-repeat="pojo in entity.customAttributeItems track by $index">
 									<td><input type="checkbox" class="icheckbox_square-blue" ></td>
 									<td><input  ng-model="pojo.text" class="form-control" placeholder="属性名称" ></td>
 									<td><button ng-click="deleTableRow($index)" type="button" class="btn btn-default" title="删除"><i class="fa fa-trash-o"></i> 删除</button></td>
