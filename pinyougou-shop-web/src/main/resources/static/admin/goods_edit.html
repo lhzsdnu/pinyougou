@@ -164,7 +164,7 @@
                                 <th class="sorting">操作</th>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="pojo in entity.goodsDesc.itemImages">
+                            <tr ng-repeat="pojo in entity.goodsDesc.itemImages1">
                                 <td>
                                     {{pojo.color}}
                                 </td>
@@ -187,7 +187,7 @@
                 <!--扩展属性-->
                 <div class="tab-pane" id="customAttribute">
                     <div class="row data-type">
-                        <div ng-repeat="pojo in entity.goodsDesc.customAttributeItems">
+                        <div ng-repeat="pojo in entity.goodsDesc.customAttributeItems1">
                             <div class="col-md-2 title">{{pojo.text}}</div>
                             <div class="col-md-10 data">
                                 <input class="form-control" ng-model="pojo.value" placeholder="{{pojo.text}}">
@@ -231,7 +231,7 @@
                                 <thead>
                                 <tr>
                                     <th class="sorting"
-                                        ng-repeat="item in entity.goodsDesc.specificationItems">{{item.attributeName}}
+                                        ng-repeat="item in entity.goodsDesc.specificationItems1">{{item.attributeName}}
                                     </th>
 
                                     <th class="sorting">价格</th>
@@ -242,8 +242,8 @@
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="pojo in entity.itemList">
-                                    <td ng-repeat="item in entity.goodsDesc.specificationItems">
-                                        {{pojo.spec[item.attributeName]}}
+                                    <td ng-repeat="item in entity.goodsDesc.specificationItems1">
+                                        {{pojo.spec1[item.attributeName]}}
                                     </td>
 
                                     <td>

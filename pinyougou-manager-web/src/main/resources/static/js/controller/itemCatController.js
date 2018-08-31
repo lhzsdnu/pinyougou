@@ -36,9 +36,7 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService,t
 	$scope.save=function(){				
 		var serviceObject;//服务层对象
 
-        var typeId=$scope.entity.typeId;
-        var id=typeId.id;
-        $scope.entity.typeId=id;
+        $scope.entity.typeId=$scope.entity.typeId.id;
 
 		if($scope.entity.id!=null){//如果有ID
 			serviceObject=itemCatService.update( $scope.entity ); //修改  
@@ -91,7 +89,7 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService,t
 		);
 	}
 
-    $scope.parentId=0;//上级ID
+    $scope.parentId=0;//上级ID，默认初始化
     //根据上级ID显示下级列表
     $scope.findByParentId=function(parentId){
         $scope.parentId=parentId;//记住上级ID
