@@ -75,7 +75,7 @@ app.controller('goodsController', function ($scope, $controller, goodsService, u
                     $scope.itemCat3List = "";
                     $scope.typeTemplate.brandIds = "";
                     $scope.specList = "";
-                    $scope.entity = {goods: {}, itemList: {}, goodsDesc: {itemImages1: [], specificationItems1: []}};//定义页面实体结构
+                    $scope.entity = {goods: {}, itemList: [], goodsDesc: {itemImages1: [], specificationItems1: []}};//定义页面实体结构
                     editor.html('');//清空富文本编辑器
 
                 } else {
@@ -221,6 +221,9 @@ app.controller('goodsController', function ($scope, $controller, goodsService, u
                 {"attributeName": name, "attributeValue": [value]});
         }
     };
+
+
+    $scope.entity.itemList = [];
 
     //创建SKU列表
     $scope.createItemList = function () {
