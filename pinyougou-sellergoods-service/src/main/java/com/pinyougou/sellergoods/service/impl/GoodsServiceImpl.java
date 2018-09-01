@@ -187,6 +187,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
             if (goods.getSellerId() != null && goods.getSellerId().length() > 0) {
                 entity.like("seller_id", goods.getSellerId());
                 //criteria.andSellerIdLike("%" + goods.getSellerId() + "%");
+                entity.eq("seller_id", goods.getSellerId());
             }
             if (goods.getGoodsName() != null && goods.getGoodsName().length() > 0) {
                 entity.like("goods_name", goods.getGoodsName());
