@@ -50,7 +50,7 @@ public interface GoodsService extends IService<Goods> {
      * @param id
      * @return
      */
-    public Goods findOne(Long id);
+    public TbGoods findOne(Long id);
 
 
     /**

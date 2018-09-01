@@ -146,7 +146,6 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     }
 
 
-
     /**
      * 修改
      */
@@ -162,9 +161,15 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      * @return
      */
     @Override
-    public Goods findOne(Long id) {
-        return goodsMapper.selectById(id);
+    public TbGoods findOne(Long id) {
+        TbGoods tbGoods = new TbGoods();
+        Goods goods = goodsMapper.selectById(id);
+        tbGoods.setGoods(goods);
+        GoodsDesc tbGoodsDesc = goodsDescMapper.selectById(id);
+        tbGoods.setGoodsDesc(tbGoodsDesc);
+        return tbGoods;
     }
+
 
     /**
      * 批量删除
