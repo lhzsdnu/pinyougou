@@ -41,7 +41,7 @@ public interface GoodsService extends IService<Goods> {
     /**
      * 修改
      */
-    public void update(Goods goods);
+    public void update(TbGoods goods);
 
 
     /**
