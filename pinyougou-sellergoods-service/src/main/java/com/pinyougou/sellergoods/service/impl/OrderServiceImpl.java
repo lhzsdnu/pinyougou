@@ -10,6 +10,7 @@ import com.pinyougou.mapper.OrderMapper;
 import com.pinyougou.pojo.PageResult;
 import com.pinyougou.sellergoods.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ import java.util.List;
         protocol = "${dubbo.protocol.id}",
         registry = "${dubbo.registry.id}"
 )
+@Transactional
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
 
     @Autowired

@@ -13,6 +13,7 @@ import com.pinyougou.pojo.PageResult;
 import com.pinyougou.sellergoods.grouppojo.TbSpecification;
 import com.pinyougou.sellergoods.service.SpecificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import java.util.Map;
         protocol = "${dubbo.protocol.id}",
         registry = "${dubbo.registry.id}"
 )
+@Transactional
 public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper, Specification> implements SpecificationService {
 
     @Autowired

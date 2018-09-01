@@ -10,6 +10,7 @@ import com.pinyougou.mapper.SeckillGoodsMapper;
 import com.pinyougou.pojo.PageResult;
 import com.pinyougou.sellergoods.service.SeckillGoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ import java.util.List;
         protocol = "${dubbo.protocol.id}",
         registry = "${dubbo.registry.id}"
 )
+@Transactional
 public class SeckillGoodsServiceImpl extends ServiceImpl<SeckillGoodsMapper, SeckillGoods> implements SeckillGoodsService {
 
     @Autowired

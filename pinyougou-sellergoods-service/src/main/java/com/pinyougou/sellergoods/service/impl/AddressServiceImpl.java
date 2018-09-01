@@ -10,6 +10,7 @@ import com.pinyougou.mapper.AddressMapper;
 import com.pinyougou.pojo.PageResult;
 import com.pinyougou.sellergoods.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ import java.util.List;
         protocol = "${dubbo.protocol.id}",
         registry = "${dubbo.registry.id}"
 )
+@Transactional
 public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> implements AddressService {
 
     @Autowired
