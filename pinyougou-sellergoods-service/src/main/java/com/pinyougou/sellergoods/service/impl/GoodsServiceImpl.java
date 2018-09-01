@@ -202,7 +202,9 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     @Override
     public void delete(Long[] ids) {
         for (Long id : ids) {
-            goodsMapper.deleteById(id);
+            Goods goods = goodsMapper.selectById(id);
+            goods.setIsDelete("1");
+            goodsMapper.updateById(goods);
         }
     }
 
@@ -243,10 +245,8 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
                 entity.like("is_enable_spec", goods.getIsEnableSpec());
                 //criteria.andIsEnableSpecLike("%" + goods.getIsEnableSpec() + "%");
             }
-            if (goods.getIsDelete() != null && goods.getIsDelete().length() > 0) {
-                entity.like("is_delete", goods.getIsDelete());
-                //criteria.andIsDeleteLike("%" + goods.getIsDelete() + "%");
-            }
+
+            entity.isNull("is_delete");
 
         }
 
@@ -263,5 +263,15 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
         return result;
     }
+
+    @Override
+    public void updateStatus(Long[] ids, String status) {
+        for (Long id : ids) {
+            Goods goods = goodsMapper.selectById(id);
+            goods.setAuditStatus(status);
+            goodsMapper.updateById(goods);
+        }
+    }
+
 
 }
