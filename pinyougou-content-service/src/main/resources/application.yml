@@ -1,0 +1,26 @@
+server:
+  port: 9002
+spring:
+  application:
+    name: pinyougou-content-service
+
+demo:
+  service:
+     version: 1.0.0
+dubbo:
+  scan:
+    basePackages: com.pinyougou.content.service.impl
+  application:
+    id: pinyougou-content-service
+    name: pinyougou-content-service
+    qos-port: 22234
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 20882
+    threads: 10
+  registry:
+    address: 192.168.200.102:2181
+    id: my-registry3
+    protocol: zookeeper
+    timeout: 30000

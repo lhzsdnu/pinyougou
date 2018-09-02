@@ -1,26 +1,27 @@
-package com.pinyougou.sellergoods.service;
+package com.pinyougou.content.service;
+
 
 import com.baomidou.mybatisplus.service.IService;
-import com.pinyougou.entity.ContentCategory;
+import com.pinyougou.entity.Content;
 import com.pinyougou.pojo.PageResult;
 
 import java.util.List;
 
 /**
  * <p>
- * 内容分类 服务类
+ * 服务类
  * </p>
  *
  * @author 栾宏志
  * @since 2018-08-08
  */
-public interface ContentCategoryService extends IService<ContentCategory> {
+public interface ContentService extends IService<Content> {
     /**
      * 返回全部列表
      *
      * @return
      */
-    public List<ContentCategory> findAll();
+    public List<Content> findAll();
 
 
     /**
@@ -34,13 +35,13 @@ public interface ContentCategoryService extends IService<ContentCategory> {
     /**
      * 增加
      */
-    public void add(ContentCategory contentCategory);
+    public void add(Content content);
 
 
     /**
      * 修改
      */
-    public void update(ContentCategory contentCategory);
+    public void update(Content content);
 
 
     /**
@@ -49,7 +50,7 @@ public interface ContentCategoryService extends IService<ContentCategory> {
      * @param id
      * @return
      */
-    public ContentCategory findOne(Long id);
+    public Content findOne(Long id);
 
 
     /**
@@ -66,6 +67,6 @@ public interface ContentCategoryService extends IService<ContentCategory> {
      * @param pageSize 每页记录数
      * @return
      */
-    public PageResult findPage(ContentCategory contentCategory, int pageNum, int pageSize);
+    public PageResult findPage(Content content, int pageNum, int pageSize);
 
 }

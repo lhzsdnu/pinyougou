@@ -1,16 +1,15 @@
-package com.pinyougou.sellergoods.service.impl;
+package com.pinyougou.content.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.pinyougou.content.service.ContentCategoryService;
 import com.pinyougou.entity.ContentCategory;
 import com.pinyougou.mapper.ContentCategoryMapper;
 import com.pinyougou.pojo.PageResult;
-import com.pinyougou.sellergoods.service.ContentCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,7 +27,6 @@ import java.util.List;
         protocol = "${dubbo.protocol.id}",
         registry = "${dubbo.registry.id}"
 )
-@Transactional
 public class ContentCategoryServiceImpl extends ServiceImpl<ContentCategoryMapper, ContentCategory> implements ContentCategoryService {
 
     @Autowired
