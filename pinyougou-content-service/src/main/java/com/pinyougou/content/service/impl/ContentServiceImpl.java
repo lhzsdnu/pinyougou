@@ -141,4 +141,20 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
 
         return result;
     }
+
+    @Override
+    public List<Content> findByCategoryId(Long categoryId) {
+        //根据广告分类ID查询广告列表
+        Wrapper<Content> entity = new EntityWrapper<Content>();
+
+        //广告分类ID
+        entity.eq("category_id",categoryId);
+        //开启状态（有效）
+        entity.eq("status", "1");
+        //排序,默认升序
+        entity.orderBy("sort_order");
+
+        return contentMapper.selectList(entity);
+    }
+
 }

@@ -69,4 +69,10 @@ public interface ContentService extends IService<Content> {
      */
     public PageResult findPage(Content content, int pageNum, int pageSize);
 
+    /**
+     * 根据广告类型ID查询列表
+     */
+    public List<Content> findByCategoryId(Long categoryId);
+
+
 }
