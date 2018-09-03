@@ -1,0 +1,38 @@
+demo:
+  service:
+    version: 1.0.0
+dubbo:
+  application:
+    id: pinyougou-portal-web
+    name: pinyougou-portal-web
+    qos-port: 22243
+  protocol:
+    id: dubbo
+    name: dubbo
+  registry:
+    address: 192.168.200.102:2181
+    id: my-consumer5
+    protocol: zookeeper
+    timeout: 30000
+  scan:
+    base-packages: com.pinyougou.portal.controller
+  consumer:
+    check: false
+server:
+  port: 9103
+spring:
+  application:
+    name: pinyougou-portal-web
+  server:
+    MaxFileSize: 300MB
+    MaxRequestSize: 500MB
+    acceptorThreadCount: 4
+    compression: 'on'
+    connectionTimeout: 10000
+    maxConnections: 10000
+    maxSpareThreads: 50
+    maxThreads: 1000
+    minSpareThreads: 50
+    port: 9103
+    protocol: org.apache.coyote.http11.Http11Nio2Protocol
+    redirectPort: 443
