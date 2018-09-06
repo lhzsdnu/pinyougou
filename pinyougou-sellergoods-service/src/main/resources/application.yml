@@ -13,12 +13,11 @@ dubbo:
   application:
     id: pinyougou-sellergoods-service
     name: pinyougou-sellergoods-service
-    qos-port: 22224
+    qos-port: 20001
   protocol:
     id: dubbo
     name: dubbo
     port: 20881
-    threads: 10
   registry:
     address: 192.168.200.102:2181
     id: my-registry2
