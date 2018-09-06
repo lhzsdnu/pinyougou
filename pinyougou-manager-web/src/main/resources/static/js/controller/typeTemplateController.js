@@ -28,9 +28,9 @@ app.controller('typeTemplateController', function ($scope, $controller, typeTemp
             function (response) {
                 $scope.entity = response;
                 //转换品牌列表
-                $scope.entity.brandIds1 = JSON.parse($scope.entity.brandIds);
+                $scope.entity.brandIdsStr = JSON.parse($scope.entity.brandIds);
                //转换规格列表
-                $scope.entity.specIds1 = JSON.parse($scope.entity.specIds);
+                $scope.entity.specIdsStr = JSON.parse($scope.entity.specIds);
                  //转换扩展属性
                 $scope.entity.customAttributeItems =
                     JSON.parse($scope.entity.customAttributeItems);
@@ -43,8 +43,8 @@ app.controller('typeTemplateController', function ($scope, $controller, typeTemp
     $scope.save = function () {
         var serviceObject;//服务层对象
 
-        $scope.entity.brandIds = JSON.stringify($scope.entity.brandIds1);//转换品牌列表
-        $scope.entity.specIds = JSON.stringify($scope.entity.specIds1);//转换规格列表
+        $scope.entity.brandIds = JSON.stringify($scope.entity.brandIdsStr);//转换品牌列表
+        $scope.entity.specIds = JSON.stringify($scope.entity.specIdsStr);//转换规格列表
         $scope.entity.customAttributeItems = JSON.stringify($scope.entity.customAttributeItems);//转换扩展属性
 
         if ($scope.entity.id != null) {//如果有ID

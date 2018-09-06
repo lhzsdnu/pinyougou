@@ -138,6 +138,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     /**
      * 列表数据
      */
+    @Override
     public List<Map> selectOptionList() {
         return brandMapper.selectOptionList();
     }

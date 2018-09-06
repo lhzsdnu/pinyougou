@@ -141,6 +141,12 @@ public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper, S
     public void delete(Long[] ids) {
         for (Long id : ids) {
             specificationMapper.deleteById(id);
+            //删除原有的规格选项
+            Wrapper<SpecificationOption> entity =
+                    new EntityWrapper<SpecificationOption>();
+            entity.eq("spec_id", id);
+            specificationOptionMapper.delete(entity);
+
         }
     }
 
@@ -175,6 +181,7 @@ public class SpecificationServiceImpl extends ServiceImpl<SpecificationMapper, S
     /**
      * 列表数据
      */
+    @Override
     public List<Map> selectOptionList() {
         return specificationMapper.selectOptionList();
     }
