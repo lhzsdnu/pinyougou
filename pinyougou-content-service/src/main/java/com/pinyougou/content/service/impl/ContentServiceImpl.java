@@ -9,6 +9,7 @@ import com.pinyougou.content.service.ContentService;
 import com.pinyougou.entity.Content;
 import com.pinyougou.mapper.ContentMapper;
 import com.pinyougou.pojo.PageResult;
+import com.pinyougou.redis.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -31,6 +32,10 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
 
     @Autowired
     private ContentMapper contentMapper;
+
+    @Autowired
+    private RedisUtil redisUtil;
+
 
     /**
      * 查询全部
@@ -67,6 +72,8 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
     @Override
     public void add(Content content) {
         contentMapper.insert(content);
+        //清除缓存
+        redisUtil.hdel("content",String.valueOf(content.getCategoryId()));
     }
 
 
@@ -75,7 +82,17 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
      */
     @Override
     public void update(Content content) {
+
+        Long categoryId = contentMapper.selectById(content.getId()).getCategoryId();
+        redisUtil.hdel("content",String.valueOf(categoryId));
+
         contentMapper.updateById(content);
+
+        if(categoryId.longValue()!=content.getCategoryId().longValue()){
+            redisUtil.hdel("content",String.valueOf(content.getCategoryId()));
+        }
+
+
     }
 
     /**
@@ -95,6 +112,8 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
     @Override
     public void delete(Long[] ids) {
         for (Long id : ids) {
+            Long categoryId = contentMapper.selectById(id).getCategoryId();
+            redisUtil.hdel("content",String.valueOf(categoryId));
             contentMapper.deleteById(id);
         }
     }
@@ -144,17 +163,30 @@ public class ContentServiceImpl extends ServiceImpl<ContentMapper, Content> impl
 
     @Override
     public List<Content> findByCategoryId(Long categoryId) {
-        //根据广告分类ID查询广告列表
-        Wrapper<Content> entity = new EntityWrapper<Content>();
 
-        //广告分类ID
-        entity.eq("category_id",categoryId);
-        //开启状态（有效）
-        entity.eq("status", "1");
-        //排序,默认升序
-        entity.orderBy("sort_order");
+        // categoryId  可能多个
+        List<Content> contentList = (List<Content>) redisUtil.hget("content", String.valueOf(categoryId));
 
-        return contentMapper.selectList(entity);
+        if (contentList == null) {
+            System.out.println("从数据库读取数据放入缓存");
+            //根据广告分类ID查询广告列表
+            Wrapper<Content> entity = new EntityWrapper<Content>();
+
+            //广告分类ID
+            entity.eq("category_id", categoryId);
+            //开启状态（有效）
+            entity.eq("status", "1");
+            //排序,默认升序
+            entity.orderBy("sort_order");
+
+            contentList = contentMapper.selectList(entity);
+            //存入缓存
+            redisUtil.hset("content", String.valueOf(categoryId), contentList);
+
+        } else {
+            System.out.println("从缓存读取数据");
+        }
+        return contentList;
     }
 
 }
