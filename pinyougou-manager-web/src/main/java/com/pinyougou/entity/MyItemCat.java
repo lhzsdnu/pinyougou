@@ -2,6 +2,7 @@ package com.pinyougou.entity;
 
 public class MyItemCat {
 
+    private long id;
     private String name;
     private MyTypeTemplate typeId;
 
@@ -9,9 +10,18 @@ public class MyItemCat {
 
     }
 
-    public MyItemCat(String name, MyTypeTemplate typeId) {
+    public MyItemCat(long id,String name, MyTypeTemplate typeId) {
         this.name = name;
         this.typeId = typeId;
+        this.id=id;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

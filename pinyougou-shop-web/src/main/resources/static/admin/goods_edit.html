@@ -23,6 +23,7 @@
 
     <script type="text/javascript" src="../plugins/angularjs/angular.min.js"></script>
     <script type="text/javascript" src="../js/base.js"></script>
+
     <script type="text/javascript" src="../js/service/goodsService.js"></script>
     <script type="text/javascript" src="../js/service/uploadService.js"></script>
     <script type="text/javascript" src="../js/service/itemCatService.js"></script>
@@ -164,12 +165,12 @@
                                 <th class="sorting">操作</th>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="pojo in entity.goodsDesc.itemImages1">
+                            <tr ng-repeat="pojo in entity.goodsDesc.itemImagesStr">
                                 <td>
                                     {{pojo.color}}
                                 </td>
                                 <td>
-                                    <img alt="" src="{{pojo.url}}" width="100px" height="100px">
+                                    <img  ng-src="{{pojo.url}}" width="100px" height="100px"/>
                                 </td>
                                 <td>
                                     <button type="button" ng-click="remove_image_entity($index)" class="btn btn-default"
@@ -187,7 +188,7 @@
                 <!--扩展属性-->
                 <div class="tab-pane" id="customAttribute">
                     <div class="row data-type">
-                        <div ng-repeat="pojo in entity.goodsDesc.customAttributeItems1">
+                        <div ng-repeat="pojo in entity.goodsDesc.customAttributeItemsStr">
                             <div class="col-md-2 title">{{pojo.text}}</div>
                             <div class="col-md-10 data">
                                 <input class="form-control" ng-model="pojo.value" placeholder="{{pojo.text}}">
@@ -202,7 +203,8 @@
                     <div class="row data-type">
                         <div class="col-md-2 title">是否启用规格</div>
                         <div class="col-md-10 data">
-                            <input type="checkbox" ng-model="entity.goods.isEnableSpec" ng-true-value="1" ng-false-value="0">
+                            <input type="checkbox" ng-model="entity.goods.isEnableSpec" ng-true-value="1"
+                                   ng-false-value="0">
                         </div>
                     </div>
                     <p>
@@ -218,7 +220,8 @@
 					                               
                                       <span ng-repeat="option in pojo.options">
                                           <input ng-click="updateSpecAttribute($event,pojo.text,option.optionName);createItemList()"
-                                                 ng-checked="checkAttributeValue(pojo.text,option.optionName)"  type="checkbox">
+                                                 ng-checked="checkAttributeValue(pojo.text,option.optionName)"
+                                                 type="checkbox">
                                                  {{option.optionName}}
                                       </span>
 
@@ -233,7 +236,8 @@
                                 <thead>
                                 <tr>
                                     <th class="sorting"
-                                        ng-repeat="item in entity.goodsDesc.specificationItems1">{{item.attributeName}}
+                                        ng-repeat="item in entity.goodsDesc.specificationItemsStr">
+                                        {{item.attributeName}}
                                     </th>
 
                                     <th class="sorting">价格</th>
@@ -243,22 +247,24 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="pojo in entity.itemList">
-                                    <td ng-repeat="item in entity.goodsDesc.specificationItems1">
-                                        {{pojo.spec1[item.attributeName]}}
-                                    </td>
 
+                                <tr ng-repeat="pojo in entity.itemList">
+                                    <td ng-repeat="item in entity.goodsDesc.specificationItemsStr">
+                                        {{pojo.specStr[item.attributeName]}}
+                                    </td>
                                     <td>
-                                        <input class="form-control" ng-model="pojo.price"  placeholder="价格">
+                                        <input class="form-control" ng-model="pojo.price" placeholder="价格">
                                     </td>
                                     <td>
                                         <input class="form-control" ng-model="pojo.num" placeholder="库存数量">
                                     </td>
                                     <td>
-                                        <input type="checkbox" ng-model="pojo.status" ng-true-value="1" ng-false-value="0" >
+                                        <input type="checkbox" ng-model="pojo.status" ng-true-value="1"
+                                               ng-false-value="0">
                                     </td>
                                     <td>
-                                        <input type="checkbox" ng-model="pojo.isDefault" ng-true-value="1" ng-false-value="0">
+                                        <input type="checkbox" ng-model="pojo.isDefault" ng-true-value="1"
+                                               ng-false-value="0">
                                     </td>
                                 </tr>
 
@@ -313,7 +319,7 @@
                                         </button>
                                     </td>
                                     <td>
-                                        <img src="{{image_entity.url}}" width="200px" height="200px">
+                                        <img ng-src="{{image_entity.url}}" width="200px" height="200px"/>
                                     </td>
                                 </tr>
                             </table>

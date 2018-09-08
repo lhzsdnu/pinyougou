@@ -1,36 +1,28 @@
-package com.pinyougou.manager.controller;
-
+package com.pinyougou.shop.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.pinyougou.entity.ItemCat;
-import com.pinyougou.entity.MyItemCat;
-import com.pinyougou.entity.MyTypeTemplate;
+import com.pinyougou.entity.TypeTemplate;
 import com.pinyougou.pojo.PageResult;
 import com.pinyougou.pojo.Result;
-import com.pinyougou.sellergoods.service.ItemCatService;
 import com.pinyougou.sellergoods.service.TypeTemplateService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
- * 商品类目 前端控制器
+ * 前端控制器
  * </p>
  *
  * @author 栾宏志
  * @since 2018-08-08
  */
 @RestController
-@RequestMapping("/itemCat")
-public class ItemCatController {
-
-    @Reference(version = "${demo.service.version}",
-            application = "${dubbo.application.id}",
-            registry = "${dubbo.registry.id}")
-    private ItemCatService itemCatService;
+@RequestMapping("/typeTemplate")
+public class TypeTemplateController {
 
     @Reference(version = "${demo.service.version}",
             application = "${dubbo.application.id}",
@@ -43,8 +35,8 @@ public class ItemCatController {
      * @return
      */
     @RequestMapping("/findAll")
-    public List<ItemCat> findAll() {
-        return itemCatService.findAll();
+    public List<TypeTemplate> findAll() {
+        return typeTemplateService.findAll();
     }
 
 
@@ -55,19 +47,19 @@ public class ItemCatController {
      */
     @RequestMapping("/findPage")
     public PageResult findPage(int page, int rows) {
-        return itemCatService.findPage(page, rows);
+        return typeTemplateService.findPage(page, rows);
     }
 
     /**
      * 增加
      *
-     * @param itemCat
+     * @param typeTemplate
      * @return
      */
     @RequestMapping("/add")
-    public Result add(@RequestBody ItemCat itemCat) {
+    public Result add(@RequestBody TypeTemplate typeTemplate) {
         try {
-            itemCatService.add(itemCat);
+            typeTemplateService.add(typeTemplate);
             return new Result(true, "增加成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,13 +70,13 @@ public class ItemCatController {
     /**
      * 修改
      *
-     * @param itemCat
+     * @param typeTemplate
      * @return
      */
     @RequestMapping("/update")
-    public Result update(@RequestBody ItemCat itemCat) {
+    public Result update(@RequestBody TypeTemplate typeTemplate) {
         try {
-            itemCatService.update(itemCat);
+            typeTemplateService.update(typeTemplate);
             return new Result(true, "修改成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,18 +85,14 @@ public class ItemCatController {
     }
 
     /**
-     * 根据id和text组装json字符串
+     * 获取实体
      *
      * @param id
      * @return
      */
     @RequestMapping("/findOne")
-    public MyItemCat findOne(Long id) {
-        String text=typeTemplateService.findOne(itemCatService.findOne(id).getTypeId()).getName();
-        MyTypeTemplate typeTemplate=new MyTypeTemplate(String.valueOf(id),text);
-        MyItemCat itemCat=new MyItemCat(id,itemCatService.findOne(id).getName(),typeTemplate);
-        return  itemCat;
-
+    public TypeTemplate findOne(Long id) {
+        return typeTemplateService.findOne(id);
     }
 
     /**
@@ -116,14 +104,8 @@ public class ItemCatController {
     @RequestMapping("/delete")
     public Result delete(Long[] ids) {
         try {
-            String str=itemCatService.delete(ids);
-            System.out.println(str);
-            if(str!=null&&!"".equals(str)){
-                return new Result(false, str);
-            }else{
-                return new Result(true, "删除成功");
-            }
-
+            typeTemplateService.delete(ids);
+            return new Result(true, "删除成功");
         } catch (Exception e) {
             e.printStackTrace();
             return new Result(false, "删除失败");
@@ -133,25 +115,21 @@ public class ItemCatController {
     /**
      * 查询+分页
      *
-     * @param itemCat
+     * @param typeTemplate
      * @param page
      * @param rows
      * @return
      */
     @RequestMapping("/search")
-    public PageResult search(@RequestBody ItemCat itemCat, int page, int rows) {
-        return itemCatService.findPage(itemCat, page, rows);
+    public PageResult search(@RequestBody TypeTemplate typeTemplate, int page, int rows) {
+        return typeTemplateService.findPage(typeTemplate, page, rows);
     }
 
-    /**
-     * 根据上级ID查询列表
-     * @param parentId
-     * @return
-     */
-    @RequestMapping("/findByParentId")
-    public List<ItemCat> findByParentId(Long parentId){
-        return itemCatService.findByParentId(parentId);
+    @RequestMapping("/findSpecList")
+    public List<Map> findSpecList(Long id) {
+        return typeTemplateService.findSpecList(id);
     }
+
 
 }
 
