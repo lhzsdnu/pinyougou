@@ -21,14 +21,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.0.4.RELEASE</version>
+            <version>2.0.5.RELEASE</version>
         </dependency>
 
         <!-- Redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
-            <version>2.0.4.RELEASE</version>
+            <version>2.0.5.RELEASE</version>
         </dependency>
         <!--集成httpClient 4.5.6 -->
         <dependency>
@@ -52,7 +52,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-activemq</artifactId>
-            <version>2.0.4.RELEASE</version>
+            <version>2.0.5.RELEASE</version>
         </dependency>
         <!-- fastjson依赖 -->
         <dependency>
@@ -105,16 +105,26 @@
             <version>2.6.0</version>
         </dependency>
 
-
-
     </dependencies>
 
     <build>
+
+        <resources>
+            <!--解决默认配置不加载的问题-->
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/fdfs_client.conf</include>
+                    <include>**/redis.properties</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.0.4.RELEASE</version>
+                <version>2.0.5.RELEASE</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
