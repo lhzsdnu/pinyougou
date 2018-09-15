@@ -16,7 +16,7 @@ public class MybatisPlusGenerator {
         //1. 全局配置
         GlobalConfig config = new GlobalConfig();
         config.setActiveRecord(true) // 是否支持AR模式
-                .setAuthor("栾宏志") // 作者
+                .setAuthor("沙漏里的时光") // 作者
                 .setOutputDir("D:\\java_exercise\\IDEA-workspace\\pinyougou\\pinyougou-generator\\src\\main\\java") // 生成路径
                 .setFileOverride(true)  // 文件覆盖
                 .setIdType(IdType.AUTO) // 主键策略
@@ -37,7 +37,6 @@ public class MybatisPlusGenerator {
 
         //3. 策略配置
         StrategyConfig stConfig = new StrategyConfig();
-
         stConfig.setCapitalMode(true) //全局大写命名
                 // 指定表名 字段名是否使用下划线
                 .setDbColumnUnderline(true)
@@ -45,7 +44,7 @@ public class MybatisPlusGenerator {
                 .setNaming(NamingStrategy.underline_to_camel)
                 .setTablePrefix("tb")// 表名生成策略
                 .setInclude();  // 需要生成的表(默认全部，即可以不写)
-        //.setExclude(new String[]{"test"}); // 排除生成的表
+                 //.setExclude(new String[]{"test"}); // 排除生成的表
 
         //4. 包名策略配置
         PackageConfig pkConfig = new PackageConfig();
