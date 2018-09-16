@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pinyougou.solrutil.mapper.ItemMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pinyougou.solrutil.entity.Item">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="sell_point" property="sellPoint" />
+        <result column="price" property="price" />
+        <result column="stock_count" property="stockCount" />
+        <result column="num" property="num" />
+        <result column="barcode" property="barcode" />
+        <result column="image" property="image" />
+        <result column="categoryId" property="categoryId" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="item_sn" property="itemSn" />
+        <result column="cost_pirce" property="costPirce" />
+        <result column="market_price" property="marketPrice" />
+        <result column="is_default" property="isDefault" />
+        <result column="goods_id" property="goodsId" />
+        <result column="seller_id" property="sellerId" />
+        <result column="cart_thumbnail" property="cartThumbnail" />
+        <result column="category" property="category" />
+        <result column="brand" property="brand" />
+        <result column="spec" property="spec" />
+        <result column="seller" property="seller" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, title, sell_point, price, stock_count, num, barcode, image, categoryId, status, create_time, update_time, item_sn, cost_pirce, market_price, is_default, goods_id, seller_id, cart_thumbnail, category, brand, spec, seller
+    </sql>
+
+</mapper>
