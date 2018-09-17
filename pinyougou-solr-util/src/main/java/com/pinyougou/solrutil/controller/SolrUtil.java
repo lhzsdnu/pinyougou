@@ -3,6 +3,7 @@ package com.pinyougou.solrutil.controller;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.pinyougou.solrutil.config.ChangeToPinYinJP;
 import com.pinyougou.solrutil.config.MusicRepository;
 import com.pinyougou.solrutil.entity.Item;
 import com.pinyougou.solrutil.mapper.ItemMapper;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,11 +26,14 @@ public class SolrUtil{
 	@Autowired
 	private MusicRepository musicRepository;
 
+	@Autowired
+	private ChangeToPinYinJP changeToPinYinJP;
+
 	@RequestMapping("deleteAll")
 	public void deleteALLItemData(){
 		musicRepository.deleteAll();
 	}
-	
+
 	/**
 	 * 导入商品数据
 	 */
@@ -49,10 +54,20 @@ public class SolrUtil{
 			copyItem.setItem_price(item.getPrice().toString());
 			copyItem.setItem_seller(item.getSeller());
 			copyItem.setItem_title(item.getTitle());
+
 			//将spec字段中的json字符串转换为map
-			Map specMap= JSON.parseObject(item.getSpec(),Map.class);
+			Map<String,String> specMap=JSON.parseObject(item.getSpec(),Map.class);
+			//changeToPinYinJP.changeToTonePinYinNoSpace();
+			Map<String, String> map = new HashMap<String, String>();
+			for (Map.Entry<String, String> entry : specMap.entrySet()) {
+				String key=changeToPinYinJP.changeToTonePinYinNoSpace(entry.getKey());
+				String value=entry.getValue();
+				map.put(key,value);
+			}
+
+			System.out.println("@@@@@@@"+map);
 			//给带注解的字段赋值
-			copyItem.setSpecMap(specMap);
+			copyItem.setSpecMap(map);
 			copyItemList.add(copyItem);
 		}
 
