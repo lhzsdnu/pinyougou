@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.convert.MappingSolrConverter;
-import org.springframework.data.solr.core.convert.SolrJConverter;
 import org.springframework.data.solr.core.mapping.SimpleSolrMappingContext;
 
 @Configuration
@@ -22,7 +21,6 @@ public class SolrConfig {
     public SolrTemplate solrTemplate() {
         HttpSolrClient solrServer= new HttpSolrClient.Builder(solrHost).build();
         SolrTemplate template = new SolrTemplate(solrServer);
-        SolrJConverter solrJConverter=new SolrJConverter();
         //解决默认动态域前缀不加载的问题
         SimpleSolrMappingContext simpleSolrMappingContext=new SimpleSolrMappingContext();
         MappingSolrConverter mappingSolrConverter=new MappingSolrConverter(simpleSolrMappingContext);
