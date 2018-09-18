@@ -1,0 +1,28 @@
+server:
+  port: 9004
+spring:
+  application:
+    name: pinyougou-search-service
+  data:
+    solr:
+      host: http://127.0.0.1:8080/solr
+
+demo:
+  service:
+     version: 1.0.0
+dubbo:
+  scan:
+    basePackages: com.pinyougou.search.service.impl
+  application:
+    id: pinyougou-search-service
+    name: pinyougou-search-service
+    qos-port: 20004
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 20884
+  registry:
+    address: 192.168.200.102:2181
+    id: my-registry4
+    protocol: zookeeper
+    timeout: 30000
