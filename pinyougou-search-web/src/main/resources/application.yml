@@ -1,0 +1,25 @@
+demo:
+  service:
+    version: 1.0.0
+dubbo:
+  application:
+    id: pinyougou-search-web
+    name: pinyougou-search-web
+    qos-port: 20104
+  protocol:
+    id: dubbo
+    name: dubbo
+  registry:
+    address: 192.168.200.102:2181
+    id: my-consumer4
+    protocol: zookeeper
+    timeout: 30000
+  scan:
+    base-packages: com.pinyougou.search.controller
+  consumer:
+    check: false
+server:
+  port: 9104
+spring:
+  application:
+    name: pinyougou-search-web
