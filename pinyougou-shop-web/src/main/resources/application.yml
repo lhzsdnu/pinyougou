@@ -5,6 +5,7 @@ dubbo:
   application:
     id: pinyougou-shop-web
     name: pinyougou-shop-web
+    qos-port: 20102
   protocol:
     id: dubbo
     name: dubbo

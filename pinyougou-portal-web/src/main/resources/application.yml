@@ -5,13 +5,13 @@ dubbo:
   application:
     id: pinyougou-portal-web
     name: pinyougou-portal-web
-    qos-port: 22243
+    qos-port: 20103
   protocol:
     id: dubbo
     name: dubbo
   registry:
     address: 192.168.200.102:2181
-    id: my-consumer5
+    id: my-consumer3
     protocol: zookeeper
     timeout: 30000
   scan:
