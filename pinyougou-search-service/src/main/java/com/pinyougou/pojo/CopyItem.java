@@ -31,6 +31,17 @@ public class CopyItem implements Serializable {
     @Field("item_seller")
     private String seller;
 
+    @Field("item_keywords")
+    private String keywords;
+
+    public String getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
+
     @Dynamic
     @Field("item_spec_*")
     private Map<String,String> specMap;
