@@ -1,7 +1,7 @@
 # pinyougou
 品优购项目  参考传智播客项目进行修改
 
-基于springboot2.0.4、dubbo2.6.2、zookeeper3.4.12、mybatis-plus开发
+基于springboot2.0.5、dubbo2.6.2、zookeeper3.4.9、mybatis-plus开发
 
 
 
