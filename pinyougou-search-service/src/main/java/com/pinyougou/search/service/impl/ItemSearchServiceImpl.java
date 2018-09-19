@@ -42,8 +42,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         String str = searchMap.get("keywords").toString();
         Pageable pageable = PageRequest.of(0, 20);
         //添加查询条件
-        HighlightPage<CopyItem> page = musicRepository.findByTitle(str, pageable);
-
+        HighlightPage<CopyItem> page = musicRepository.findByKeywordsLike(str, pageable);
         //循环高亮入口集合
         for (HighlightEntry<CopyItem> h : page.getHighlighted()) {
             //获取原实体类
@@ -51,10 +50,10 @@ public class ItemSearchServiceImpl implements ItemSearchService {
             //实际上此处是遍历的，但现只要求title高亮
             if (h.getHighlights().size() > 0 && h.getHighlights().get(0).getSnipplets().size() > 0) {
                 //设置高亮的结果
+                System.out.println(h.getHighlights().get(0).getSnipplets().get(0));
                 item.setTitle(h.getHighlights().get(0).getSnipplets().get(0));
             }
         }
-
         map.put("rows", page.getContent());
         return map;
     }
