@@ -10,10 +10,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MusicRepository extends SolrCrudRepository<CopyItem, String> {
 
-    //ScoredPage findByKeywordsEquals(String keywords, Pageable pageable);
-
     //设置高亮的域,高亮前缀,高亮后缀
     @Highlight(fields ={"item_title"},prefix = "<em style='color:red'>", postfix = "</em>")
-    HighlightPage<CopyItem> findByKeywordsLike(String keywords, Pageable pageable);
+    HighlightPage<CopyItem> findByKeywordsContaining(String keywords, Pageable pageable);
 
 }
