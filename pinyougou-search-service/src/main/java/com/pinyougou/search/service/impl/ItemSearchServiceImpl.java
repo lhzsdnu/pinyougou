@@ -1,6 +1,8 @@
 package com.pinyougou.search.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.pinyougou.config.ChangeToPinYinJP;
+import com.pinyougou.config.MapCompare;
 import com.pinyougou.config.MusicRepository;
 import com.pinyougou.config.MusicRepositoryGroup;
 import com.pinyougou.mapper.ItemMapper;
@@ -44,6 +46,9 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     @Autowired
     private RedisUtil redisUtil;
 
+    @Autowired
+    private ChangeToPinYinJP changeToPinYinJP;
+
     @Override
     public Map<String, Object> search(Map searchMap) {
         Map<String, Object> map = new HashMap<>();
@@ -57,7 +62,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         map.put("categoryList", categoryList);
 
         //3.查询品牌和规格列表
-        if(categoryList.size()>0){
+        if (categoryList.size() > 0) {
             map.putAll(searchBrandAndSpecList(categoryList.get(0).toString()));
         }
 
@@ -69,16 +74,30 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         Map<String, Object> map = new HashMap<>();
 
         //按照关键字查询
-        String str = searchMap.get("keywords").toString();
-        Pageable pageable = PageRequest.of(0, 20);
+        String keywords = searchMap.get("keywords").toString();
+        String category = searchMap.get("category").toString();
+        String brand = searchMap.get("brand").toString();
 
-        // 添加查询条件
+        Map<String, String> specMap = (Map) searchMap.get("spec");
+        Map<String, String> mapSpec = new HashMap<String, String>();
+        for (String key : specMap.keySet()) {
+            String keySpec = changeToPinYinJP.changeToTonePinYinNoSpace(key);
+            String valueSpec = specMap.get(key);
+            mapSpec.put(keySpec, valueSpec);
+        }
+
+
+        Pageable pageable = PageRequest.of(0, 20);
         // HighlightPage为返回的高亮页对象
-        HighlightPage<CopyItem> page = musicRepository.findByKeywordsContaining(str, pageable);
+        HighlightPage<CopyItem> page = musicRepository.findByKeywordsContaining(keywords, category, brand, pageable);
+
+        int i = 0;
+        List<CopyItem> copyItemList = new ArrayList<CopyItem>();
 
         // HighlightEntry 高亮入口
         // List<HighlightEntry<T>> getHighlighted() 高亮入口集合(循环),实际上是对应的每条记录
         for (HighlightEntry<CopyItem> h : page.getHighlighted()) {
+
             //获取原实体类
             CopyItem item = h.getEntity();
             //获取高亮列表(高亮域/列的个数，即fields属性)  @Highlight(fields ={"item_title"})
@@ -89,11 +108,20 @@ public class ItemSearchServiceImpl implements ItemSearchService {
             //snipplets.get(0)
             if (h.getHighlights().size() > 0 && h.getHighlights().get(0).getSnipplets().size() > 0) {
                 //设置高亮的结果
-                System.out.println("@@@@" + h.getHighlights().get(0).getSnipplets().get(0));
                 item.setTitle(h.getHighlights().get(0).getSnipplets().get(0));
             }
+
+            Map<String, String> itemMap = item.getSpecMap();
+
+            boolean flag = MapCompare.compare(mapSpec, itemMap);
+            if (flag) {
+                copyItemList.add(page.getContent().get(i));
+            }
+            i++;
+
         }
-        map.put("rows", page.getContent());
+
+        map.put("rows", copyItemList);
         return map;
     }
 
@@ -132,14 +160,14 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     private Map searchBrandAndSpecList(String category) {
         Map map = new HashMap();
         //根据分类名称获取模板ID
-        Integer typeId = (Integer) redisUtil.hget("itemCat",category);
+        Integer typeId = (Integer) redisUtil.hget("itemCat", category);
         if (typeId != null) {
             //根据模板ID查询品牌列表
-            List brandList = (List)  redisUtil.hget("brandList",typeId.toString());
+            List brandList = (List) redisUtil.hget("brandList", typeId.toString());
             System.out.println("从缓存中获取品牌列表");
             map.put("brandList", brandList);
             //根据模板ID查询规格列表
-            List specList = (List)  redisUtil.hget("specList",typeId.toString());
+            List specList = (List) redisUtil.hget("specList", typeId.toString());
             System.out.println("从缓存中获取规格列表");
             map.put("specList", specList);
         }
