@@ -5,6 +5,7 @@ import com.pinyougou.config.MusicRepository;
 import com.pinyougou.config.MusicRepositoryGroup;
 import com.pinyougou.mapper.ItemMapper;
 import com.pinyougou.pojo.CopyItem;
+import com.pinyougou.redis.RedisUtil;
 import com.pinyougou.search.service.ItemSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,6 +41,9 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     @Autowired
     private SolrTemplate solrTemplate;
 
+    @Autowired
+    private RedisUtil redisUtil;
+
     @Override
     public Map<String, Object> search(Map searchMap) {
         Map<String, Object> map = new HashMap<>();
@@ -51,6 +55,12 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         //2.根据关键字查询商品分类
         List categoryList = searchCategoryList(searchMap);
         map.put("categoryList", categoryList);
+
+        //3.查询品牌和规格列表
+        if(categoryList.size()>0){
+            map.putAll(searchBrandAndSpecList(categoryList.get(0).toString()));
+        }
+
 
         return map;
     }
@@ -79,7 +89,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
             //snipplets.get(0)
             if (h.getHighlights().size() > 0 && h.getHighlights().get(0).getSnipplets().size() > 0) {
                 //设置高亮的结果
-                System.out.println("@@@@"+h.getHighlights().get(0).getSnipplets().get(0));
+                System.out.println("@@@@" + h.getHighlights().get(0).getSnipplets().get(0));
                 item.setTitle(h.getHighlights().get(0).getSnipplets().get(0));
             }
         }
@@ -103,14 +113,37 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         //设置分组选项,得到分组页
         FacetPage<CopyItem> page = musicRepositoryGroup.findByKeywordsContaining(str, pageable);
         //得到分组结果入口页
-        Page<FacetFieldEntry>  groupEntries = page.getFacetResultPage("item_category");
+        Page<FacetFieldEntry> groupEntries = page.getFacetResultPage("item_category");
         //得到分组入口集合
         Iterator<FacetFieldEntry> content = groupEntries.iterator();
-        while(content.hasNext()){
+        while (content.hasNext()) {
             //将分组结果的名称封装到返回值中
             list.add(content.next().getValue());
         }
         return list;
+    }
+
+    /**
+     * 查询品牌和规格列表
+     *
+     * @param category 分类名称
+     * @return
+     */
+    private Map searchBrandAndSpecList(String category) {
+        Map map = new HashMap();
+        //根据分类名称获取模板ID
+        Integer typeId = (Integer) redisUtil.hget("itemCat",category);
+        if (typeId != null) {
+            //根据模板ID查询品牌列表
+            List brandList = (List)  redisUtil.hget("brandList",typeId.toString());
+            System.out.println("从缓存中获取品牌列表");
+            map.put("brandList", brandList);
+            //根据模板ID查询规格列表
+            List specList = (List)  redisUtil.hget("specList",typeId.toString());
+            System.out.println("从缓存中获取规格列表");
+            map.put("specList", specList);
+        }
+        return map;
     }
 
 

@@ -11,6 +11,7 @@ import com.pinyougou.entity.TypeTemplate;
 import com.pinyougou.mapper.SpecificationOptionMapper;
 import com.pinyougou.mapper.TypeTemplateMapper;
 import com.pinyougou.pojo.PageResult;
+import com.pinyougou.redis.RedisUtil;
 import com.pinyougou.sellergoods.service.TypeTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,9 @@ public class TypeTemplateServiceImpl extends ServiceImpl<TypeTemplateMapper, Typ
 
     @Autowired
     private SpecificationOptionMapper specificationOptionMapper;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
 
     /**
@@ -142,6 +146,9 @@ public class TypeTemplateServiceImpl extends ServiceImpl<TypeTemplateMapper, Typ
         //注意！！ 分页 total 是经过插件自动 回写 到传入 page 对象
         page.setRecords(typeTemplateMapper.selectPage(page, entity));
 
+
+        saveToRedis();//存入数据到缓存
+
         // 封装分页结果对象
         PageResult result = new PageResult();
         result.setTotal(page.getTotal());
@@ -182,4 +189,26 @@ public class TypeTemplateServiceImpl extends ServiceImpl<TypeTemplateMapper, Typ
         return list;
 
     }
+
+    /**
+     * 将数据存入缓存
+     */
+    private void saveToRedis(){
+        //获取模板数据
+        List<TypeTemplate> typeTemplateList = findAll();
+        //循环模板
+        for(TypeTemplate typeTemplate :typeTemplateList){
+            //存储品牌列表
+            List<Map> brandList = JSON.parseArray(typeTemplate.getBrandIds(), Map.class);
+            redisUtil.hset("brandList",typeTemplate.getId().toString(), brandList);
+            System.out.println("品牌列表添加到缓存中");
+            //存储规格列表
+            //根据模板ID查询规格列表
+            List<Map> specList = findSpecList(typeTemplate.getId());
+            redisUtil.hset("specList",typeTemplate.getId().toString(), specList);
+            System.out.println("规格列表添加到缓存中");
+        }
+    }
+
+
 }

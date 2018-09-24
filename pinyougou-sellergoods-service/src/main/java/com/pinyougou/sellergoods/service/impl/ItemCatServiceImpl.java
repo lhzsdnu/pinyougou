@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.pinyougou.entity.ItemCat;
 import com.pinyougou.mapper.ItemCatMapper;
 import com.pinyougou.pojo.PageResult;
+import com.pinyougou.redis.RedisUtil;
 import com.pinyougou.sellergoods.service.ItemCatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,9 @@ public class ItemCatServiceImpl extends ServiceImpl<ItemCatMapper, ItemCat> impl
 
     @Autowired
     private ItemCatMapper itemCatMapper;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 查询全部
@@ -154,6 +158,14 @@ public class ItemCatServiceImpl extends ServiceImpl<ItemCatMapper, ItemCat> impl
 
         Wrapper<ItemCat> entity = new EntityWrapper<ItemCat>();
         entity.eq("parent_Id",parentId);
+
+        //每次执行查询的时候，一次性读取缓存进行存储 (因为每次增删改都要执行此方法)
+        List<ItemCat> list = findAll();
+        for(ItemCat itemCat:list){
+            redisUtil.hset("itemCat",itemCat.getName(), itemCat.getTypeId());
+        }
+        System.out.println("更新缓存:商品分类表");
+
         return itemCatMapper.selectList(entity);
 
     }
