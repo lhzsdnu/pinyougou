@@ -64,10 +64,9 @@ public class SolrUtil{
 				String value=entry.getValue();
 				map.put(key,value);
 			}
-
-			System.out.println("@@@@@@@"+map);
 			//给带注解的字段赋值
 			copyItem.setSpecMap(map);
+
 			copyItemList.add(copyItem);
 		}
 
