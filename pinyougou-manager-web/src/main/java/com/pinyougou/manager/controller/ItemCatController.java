@@ -101,7 +101,7 @@ public class ItemCatController {
     @RequestMapping("/findOne")
     public MyItemCat findOne(Long id) {
         String text=typeTemplateService.findOne(itemCatService.findOne(id).getTypeId()).getName();
-        MyTypeTemplate typeTemplate=new MyTypeTemplate(String.valueOf(id),text);
+        MyTypeTemplate typeTemplate=new MyTypeTemplate(itemCatService.findOne(id).getTypeId().toString(),text);
         MyItemCat itemCat=new MyItemCat(id,itemCatService.findOne(id).getName(),typeTemplate);
         return  itemCat;
 
