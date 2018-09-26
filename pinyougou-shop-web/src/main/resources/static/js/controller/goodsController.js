@@ -142,6 +142,7 @@ app.controller('goodsController', function ($scope, $controller, $location, good
     $scope.add_image_entity = function () {
         $scope.entity.goodsDesc.itemImagesStr.push($scope.image_entity);
         document.getElementById("file").value = "";
+        document.getElementById("uploadImg").src="";
     };
 
     //列表中移除图片
