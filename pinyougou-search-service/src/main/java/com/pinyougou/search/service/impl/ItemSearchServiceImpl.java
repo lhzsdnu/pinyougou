@@ -2,9 +2,7 @@ package com.pinyougou.search.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.config.ChangeToPinYinJP;
-import com.pinyougou.config.MapCompare;
 import com.pinyougou.config.MusicRepository;
-import com.pinyougou.config.MusicRepositoryGroup;
 import com.pinyougou.mapper.ItemMapper;
 import com.pinyougou.pojo.CopyItem;
 import com.pinyougou.redis.RedisUtil;
@@ -37,8 +35,6 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 
     @Autowired
     private MusicRepository musicRepository;
-    @Autowired
-    private MusicRepositoryGroup musicRepositoryGroup;
 
     @Autowired
     private SolrTemplate solrTemplate;
@@ -62,15 +58,9 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         map.put("categoryList", categoryList);
 
         //3.查询品牌和规格列表
-        String categoryName=(String)searchMap.get("category");
-        if(!"".equals(categoryName)){//如果有分类名称
-            map.putAll(searchBrandAndSpecList(categoryName));
-        }else{//如果没有分类名称，按照第一个查询
-            if(categoryList.size()>0){
-                map.putAll(searchBrandAndSpecList(categoryList.get(0).toString()));
-            }
+        if (categoryList.size() > 0) {
+            map.putAll(searchBrandAndSpecList(categoryList.get(0).toString()));
         }
-
         return map;
     }
 
@@ -87,16 +77,13 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         for (String key : specMap.keySet()) {
             String keySpec = changeToPinYinJP.changeToTonePinYinNoSpace(key);
             String valueSpec = specMap.get(key);
-            mapSpec.put(keySpec, valueSpec);
         }
 
-
         Pageable pageable = PageRequest.of(0, 20);
-        // HighlightPage为返回的高亮页对象
-        HighlightPage<CopyItem> page = musicRepository.findByKeywordsContaining(keywords, category, brand, pageable);
 
-        int i = 0;
-        List<CopyItem> copyItemList = new ArrayList<CopyItem>();
+        // 添加查询条件
+        // HighlightPage为返回的高亮页对象
+        HighlightPage<CopyItem> page = musicRepository.findByKeywords(keywords, category, brand, pageable);
 
         // HighlightEntry 高亮入口
         // List<HighlightEntry<T>> getHighlighted() 高亮入口集合(循环),实际上是对应的每条记录
@@ -114,18 +101,9 @@ public class ItemSearchServiceImpl implements ItemSearchService {
                 //设置高亮的结果
                 item.setTitle(h.getHighlights().get(0).getSnipplets().get(0));
             }
-
-            Map<String, String> itemMap = item.getSpecMap();
-
-            boolean flag = MapCompare.compare(mapSpec, itemMap);
-            if (flag) {
-                copyItemList.add(page.getContent().get(i));
-            }
-            i++;
-
         }
 
-        map.put("rows", copyItemList);
+        map.put("rows", page.getContent());
         return map;
     }
 
@@ -139,11 +117,11 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         List<String> list = new ArrayList();
 
         //按照关键字查询
-        String str = searchMap.get("keywords").toString();
+        String keywords = searchMap.get("keywords").toString();
         Pageable pageable = PageRequest.of(0, 20);
 
         //设置分组选项,得到分组页
-        FacetPage<CopyItem> page = musicRepositoryGroup.findByKeywordsContaining(str, pageable);
+        FacetPage<CopyItem> page = musicRepository.findByKeywords(keywords, pageable);
         //得到分组结果入口页
         Page<FacetFieldEntry> groupEntries = page.getFacetResultPage("item_category");
         //得到分组入口集合
@@ -152,6 +130,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
             //将分组结果的名称封装到返回值中
             list.add(content.next().getValue());
         }
+
         return list;
     }
 
