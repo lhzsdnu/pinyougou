@@ -2,6 +2,7 @@ package com.pinyougou.search.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.config.ChangeToPinYinJP;
+import com.pinyougou.config.MapCompare;
 import com.pinyougou.config.MusicRepository;
 import com.pinyougou.mapper.ItemMapper;
 import com.pinyougou.pojo.CopyItem;
@@ -58,9 +59,15 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         map.put("categoryList", categoryList);
 
         //3.查询品牌和规格列表
-        if (categoryList.size() > 0) {
-            map.putAll(searchBrandAndSpecList(categoryList.get(0).toString()));
+        String categoryName=(String)searchMap.get("category");
+        if(!"".equals(categoryName)){//如果有分类名称
+            map.putAll(searchBrandAndSpecList(categoryName));
+        }else{//如果没有分类名称，按照第一个查询
+            if(categoryList.size()>0){
+                map.putAll(searchBrandAndSpecList(categoryList.get(0).toString()));
+            }
         }
+
         return map;
     }
 
@@ -77,13 +84,18 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         for (String key : specMap.keySet()) {
             String keySpec = changeToPinYinJP.changeToTonePinYinNoSpace(key);
             String valueSpec = specMap.get(key);
+            mapSpec.put(keySpec, valueSpec);
         }
+
 
         Pageable pageable = PageRequest.of(0, 20);
 
         // 添加查询条件
         // HighlightPage为返回的高亮页对象
         HighlightPage<CopyItem> page = musicRepository.findByKeywords(keywords, category, brand, pageable);
+
+        int i = 0;
+        List<CopyItem> copyItemList = new ArrayList<CopyItem>();
 
         // HighlightEntry 高亮入口
         // List<HighlightEntry<T>> getHighlighted() 高亮入口集合(循环),实际上是对应的每条记录
@@ -101,9 +113,16 @@ public class ItemSearchServiceImpl implements ItemSearchService {
                 //设置高亮的结果
                 item.setTitle(h.getHighlights().get(0).getSnipplets().get(0));
             }
+            Map<String, String> itemMap = item.getSpecMap();
+            boolean flag = MapCompare.compare(mapSpec, itemMap);
+            if (flag) {
+                copyItemList.add(page.getContent().get(i));
+            }
+            i++;
+
         }
 
-        map.put("rows", page.getContent());
+        map.put("rows", copyItemList);
         return map;
     }
 
