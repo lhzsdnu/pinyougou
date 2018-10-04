@@ -2,17 +2,16 @@ package com.pinyougou.search.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.config.ChangeToPinYinJP;
-import com.pinyougou.config.MapCompare;
 import com.pinyougou.config.MusicRepository;
 import com.pinyougou.mapper.ItemMapper;
 import com.pinyougou.pojo.CopyItem;
 import com.pinyougou.redis.RedisUtil;
 import com.pinyougou.search.service.ItemSearchService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.solr.core.SolrTemplate;
+import org.springframework.data.solr.core.query.*;
 import org.springframework.data.solr.core.query.result.FacetFieldEntry;
 import org.springframework.data.solr.core.query.result.FacetPage;
 import org.springframework.data.solr.core.query.result.HighlightEntry;
@@ -59,11 +58,11 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         map.put("categoryList", categoryList);
 
         //3.查询品牌和规格列表
-        String categoryName=(String)searchMap.get("category");
-        if(!"".equals(categoryName)){//如果有分类名称
+        String categoryName = (String) searchMap.get("category");
+        if (!"".equals(categoryName)) {//如果有分类名称
             map.putAll(searchBrandAndSpecList(categoryName));
-        }else{//如果没有分类名称，按照第一个查询
-            if(categoryList.size()>0){
+        } else {//如果没有分类名称，按照第一个查询
+            if (categoryList.size() > 0) {
                 map.putAll(searchBrandAndSpecList(categoryList.get(0).toString()));
             }
         }
@@ -72,58 +71,74 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     }
 
     private Map searchList(Map searchMap) {
-        Map<String, Object> map = new HashMap<>();
 
-        //按照关键字查询
-        String keywords = searchMap.get("keywords").toString();
-        String category = searchMap.get("category").toString();
-        String brand = searchMap.get("brand").toString();
-
-        Map<String, String> specMap = (Map) searchMap.get("spec");
-        Map<String, String> mapSpec = new HashMap<String, String>();
-        for (String key : specMap.keySet()) {
-            String keySpec = changeToPinYinJP.changeToTonePinYinNoSpace(key);
-            String valueSpec = specMap.get(key);
-            mapSpec.put(keySpec, valueSpec);
+        // 1.1 构建高亮域选项
+        HighlightQuery query = new SimpleHighlightQuery();
+        HighlightOptions highlightOptions = new HighlightOptions().addField("item_title");
+        highlightOptions.setSimplePrefix("<em style='color:red'>");
+        highlightOptions.setSimplePostfix("</em>");
+        query.setHighlightOptions(highlightOptions);
+        // 1.2 设置查询条件
+        String keywords = (String) searchMap.get("keywords");
+        Criteria criteria = new Criteria("item_keywords").is(keywords);
+        query.addCriteria(criteria);
+        // 1.3 设置分类过滤
+        if (StringUtils.isNotBlank((String) searchMap.get("category"))) {
+            Criteria categoryCriteria = new Criteria("item_category").is(searchMap.get("category"));
+            FilterQuery filterQuery = new SimpleFilterQuery().addCriteria(categoryCriteria);
+            query.addFilterQuery(filterQuery);
+        }
+        // 1.4 设置品牌过滤
+        if (StringUtils.isNotBlank((String) searchMap.get("brand"))) {
+            Criteria brandCriteria = new Criteria("item_brand").is(searchMap.get("brand"));
+            FilterQuery filterQuery = new SimpleFilterQuery().addCriteria(brandCriteria);
+            query.addFilterQuery(filterQuery);
+        }
+        // 1.5 设置规格选项过滤(数据格式Map动态域)
+        if (searchMap.get("spec") != null) {
+            Map<String, String> specMap = (Map<String, String>) searchMap.get("spec");
+            for (String key : specMap.keySet()) {
+                Criteria specCriteria = new Criteria("item_spec_" + changeToPinYinJP.changeToTonePinYinNoSpace(key)).is(specMap.get(key));
+                FilterQuery filterQuery = new SimpleFilterQuery().addCriteria(specCriteria);
+                query.addFilterQuery(filterQuery);
+            }
+        }
+        // 1.6 价格区间过滤
+        if (StringUtils.isNotBlank((String) searchMap.get("price"))) {
+            String[] price = ((String) searchMap.get("price")).split("-");
+            // 最小价格不等于0
+            if (!"0".equals(price[0])) {
+                Criteria priceCriteria = new Criteria("item_price").greaterThanEqual(price[0]);
+                FilterQuery filterQuery = new SimpleFilterQuery().addCriteria(priceCriteria);
+                query.addFilterQuery(filterQuery);
+            }
+            // 不等于最大价格,不做限制
+            if (!"*".equals(price[1])) {
+                Criteria priceCriteria = new Criteria("item_price").lessThanEqual(price[1]);
+                FilterQuery filterQuery = new SimpleFilterQuery().addCriteria(priceCriteria);
+                query.addFilterQuery(filterQuery);
+            }
         }
 
-
-        Pageable pageable = PageRequest.of(0, 20);
-
-        // 添加查询条件
-        // HighlightPage为返回的高亮页对象
-        HighlightPage<CopyItem> page = musicRepository.findByKeywords(keywords, category, brand, pageable);
-
-        int i = 0;
-        List<CopyItem> copyItemList = new ArrayList<CopyItem>();
-
-        // HighlightEntry 高亮入口
-        // List<HighlightEntry<T>> getHighlighted() 高亮入口集合(循环),实际上是对应的每条记录
-        for (HighlightEntry<CopyItem> h : page.getHighlighted()) {
-
-            //获取原实体类
-            CopyItem item = h.getEntity();
-            //获取高亮列表(高亮域/列的个数，即fields属性)  @Highlight(fields ={"item_title"})
-            //List<Highlight> highlightsList = entry.getHighlights();
-            //获取每个域有可能存储多值   <field name="item_keywords" multiValued="true"/>
-            //List<String> snipplets = h.getSnipplets();
-            //获取要高亮的内容
-            //snipplets.get(0)
-            if (h.getHighlights().size() > 0 && h.getHighlights().get(0).getSnipplets().size() > 0) {
-                //设置高亮的结果
-                item.setTitle(h.getHighlights().get(0).getSnipplets().get(0));
+        // 1.7 执行查询并处理结果
+        HighlightPage<CopyItem> pageResult = solrTemplate.queryForHighlightPage("new_core", query, CopyItem.class);
+        // 获取高亮入口集合
+        List<HighlightEntry<CopyItem>> entrys = pageResult.getHighlighted();
+        for (HighlightEntry<CopyItem> highlightEntry : entrys) {
+            // 获取所有高亮域
+            List<HighlightEntry.Highlight> highlights = highlightEntry.getHighlights();
+            // 可能存在多值,得到第一个域的第一个值得高亮
+            if (highlights != null && highlights.size() > 0 && highlights.get(0).getSnipplets() != null
+                    && highlights.get(0).getSnipplets().size() > 0) {
+                CopyItem entity = highlightEntry.getEntity();
+                String highlightTitle = highlights.get(0).getSnipplets().get(0);
+                entity.setTitle(highlightTitle);
             }
-            Map<String, String> itemMap = item.getSpecMap();
-            boolean flag = MapCompare.compare(mapSpec, itemMap);
-            if (flag) {
-                copyItemList.add(page.getContent().get(i));
-            }
-            i++;
-
         }
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        resultMap.put("rows", pageResult.getContent());
+        return resultMap;
 
-        map.put("rows", copyItemList);
-        return map;
     }
 
     /**
@@ -133,24 +148,28 @@ public class ItemSearchServiceImpl implements ItemSearchService {
      * @return
      */
     private List searchCategoryList(Map searchMap) {
-        List<String> list = new ArrayList();
+        List<String> searchList = new ArrayList<String>();
+        // 构建分页 group by
+        FacetQuery query = new SimpleFacetQuery();
+        FacetOptions facetOptions = new FacetOptions().addFacetOnField("item_category");
+        query.setFacetOptions(facetOptions);
+        // 构建关键字查询 where
+        Criteria criteria = new Criteria("item_keywords").is(searchMap.get("keywords"));
+        query.addCriteria(criteria);
 
-        //按照关键字查询
-        String keywords = searchMap.get("keywords").toString();
-        Pageable pageable = PageRequest.of(0, 20);
+        // 执行查询,获取分组页对象
+        FacetPage<CopyItem> groupPage = solrTemplate.queryForFacetPage("new_core", query, CopyItem.class);
 
-        //设置分组选项,得到分组页
-        FacetPage<CopyItem> page = musicRepository.findByKeywords(keywords, pageable);
         //得到分组结果入口页
-        Page<FacetFieldEntry> groupEntries = page.getFacetResultPage("item_category");
+        Page<FacetFieldEntry>  groupEntries = groupPage.getFacetResultPage("item_category");
         //得到分组入口集合
         Iterator<FacetFieldEntry> content = groupEntries.iterator();
-        while (content.hasNext()) {
+        while(content.hasNext()){
             //将分组结果的名称封装到返回值中
-            list.add(content.next().getValue());
+            searchList.add(content.next().getValue());
         }
 
-        return list;
+        return searchList;
     }
 
     /**
