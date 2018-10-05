@@ -10,6 +10,7 @@ import com.pinyougou.search.service.ItemSearchService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.*;
 import org.springframework.data.solr.core.query.result.FacetFieldEntry;
@@ -50,6 +51,10 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         Map<String, Object> map = new HashMap<>();
         //putAll可以合并两个Map，只不过如果有相同的key那么用后面的覆盖前面的
 
+        //关键字空格处理
+        String keywords = (String) searchMap.get("keywords");
+        searchMap.put("keywords", keywords.replace(" ", ""));
+
         //1.查询列表
         map.putAll(searchList(searchMap));
 
@@ -81,6 +86,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         // 1.2 设置查询条件
         String keywords = (String) searchMap.get("keywords");
         Criteria criteria = new Criteria("item_keywords").is(keywords);
+
         query.addCriteria(criteria);
         // 1.3 设置分类过滤
         if (StringUtils.isNotBlank((String) searchMap.get("category"))) {
@@ -120,6 +126,32 @@ public class ItemSearchServiceImpl implements ItemSearchService {
             }
         }
 
+        Integer pageNo= (Integer) searchMap.get("pageNo");//提取页码
+        if(pageNo==null){
+            pageNo=1;//默认第一页
+        }
+        Integer pageSize=(Integer) searchMap.get("pageSize");//每页记录数
+        if(pageSize==null){
+            pageSize=20;//默认20
+        }
+        query.setOffset(Long.parseLong(String.valueOf(((pageNo-1)*pageSize))));//从第几条记录查询
+        query.setRows(pageSize);
+
+
+        //排序
+        String sortValue= (String) searchMap.get("sort");//ASC  DESC
+        String sortField= (String) searchMap.get("sortField");//排序字段
+        if(sortValue!=null && !sortValue.equals("")){
+            if(sortValue.equals("ASC")){
+                Sort sort=new Sort(Sort.Direction.ASC, "item_"+sortField);
+                query.addSort(sort);
+            }
+            if(sortValue.equals("DESC")){
+                Sort sort=new Sort(Sort.Direction.DESC, "item_"+sortField);
+                query.addSort(sort);
+            }
+        }
+
         // 1.7 执行查询并处理结果
         HighlightPage<CopyItem> pageResult = solrTemplate.queryForHighlightPage("new_core", query, CopyItem.class);
         // 获取高亮入口集合
@@ -137,6 +169,9 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         }
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("rows", pageResult.getContent());
+        resultMap.put("totalPages", pageResult.getTotalPages());//返回总页数
+        resultMap.put("total", pageResult.getTotalElements());//返回总记录数
+
         return resultMap;
 
     }
