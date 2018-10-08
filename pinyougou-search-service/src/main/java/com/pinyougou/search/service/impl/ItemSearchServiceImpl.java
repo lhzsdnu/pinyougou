@@ -2,6 +2,7 @@ package com.pinyougou.search.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.config.ChangeToPinYinJP;
+import com.pinyougou.config.ItemRepository;
 import com.pinyougou.config.MusicRepository;
 import com.pinyougou.mapper.ItemMapper;
 import com.pinyougou.pojo.CopyItem;
@@ -36,6 +37,9 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 
     @Autowired
     private MusicRepository musicRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
     @Autowired
     private SolrTemplate solrTemplate;
@@ -229,6 +233,23 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         }
         return map;
     }
+
+    @Override
+    public void importList(List list) {
+        itemRepository.saveAll(list);
+    }
+
+
+    @Override
+    public void deleteByGoodsIds(List goodsIdList) {
+        System.out.println("删除商品ID"+goodsIdList);
+        Query query=new SimpleQuery();
+        Criteria criteria=new Criteria("item_goodsId").in(goodsIdList);
+        query.addCriteria(criteria);
+        solrTemplate.delete("new_core",query);
+        solrTemplate.commit("new_core");
+    }
+
 
 
 }

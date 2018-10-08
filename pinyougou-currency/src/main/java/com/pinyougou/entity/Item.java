@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
+import org.springframework.data.solr.core.mapping.SolrDocument;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ import java.util.Date;
  * @since 2018-08-08
  */
 @TableName("tb_item")
+@SolrDocument(solrCoreName = "new_core")//JPA写法
 public class Item extends Model<Item> {
 
     private static final long serialVersionUID = 1L;

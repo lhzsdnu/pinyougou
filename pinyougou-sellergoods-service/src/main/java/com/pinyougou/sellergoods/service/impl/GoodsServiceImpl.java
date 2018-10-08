@@ -13,9 +13,7 @@ import com.pinyougou.sellergoods.grouppojo.TbGoods;
 import com.pinyougou.sellergoods.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -98,6 +96,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
 
 
     private void setItemValus(TbGoods goods, Item item) {
+
         item.setGoodsId(goods.getGoods().getId());//商品SPU编号
         item.setSellerId(goods.getGoods().getSellerId());//商家编号
         item.setCategoryId(goods.getGoods().getCategory3Id());//商品分类编号（3级）
@@ -154,6 +153,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
                     title += " " + specMap.get(key);
                 }
                 item.setTitle(title);
+                item.setStatus("1");//状态
                 setItemValus(tbGoods, item);
                 itemMapper.insert(item);
             }
@@ -273,5 +273,17 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
         }
     }
 
+    @Override
+    public List<Item> findItemListByGoodsIdandStatus(Long[] goodsIds, String status) {
+
+        List<Item> list = new ArrayList<Item>();
+        for (Long id : goodsIds) {
+            Wrapper<Item> entity = new EntityWrapper<Item>();
+            entity.eq("status", status);
+            entity.eq("goods_id", id);
+            list.addAll(itemMapper.selectList(entity));
+        }
+        return list;
+    }
 
 }

@@ -1,4 +1,4 @@
-app.controller('searchController',function($scope,searchService){
+app.controller('searchController',function($scope,searchService,$location){
 
     $scope.searchMap={'keywords':'','category':'','brand':'','spec':{},'price':'','pageNo':1,'pageSize':20,'sortField':'','sort':''};
 
@@ -11,6 +11,12 @@ app.controller('searchController',function($scope,searchService){
                 buildPageLabel();//调用
             }
         );
+    }
+
+    //加载查询字符串
+    $scope.loadkeywords=function(){
+        $scope.searchMap.keywords= $location.search()['keywords'];
+        $scope.search();
     }
 
     //设置排序规则

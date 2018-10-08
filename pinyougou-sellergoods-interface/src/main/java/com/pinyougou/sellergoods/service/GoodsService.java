@@ -2,6 +2,7 @@ package com.pinyougou.sellergoods.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.pinyougou.entity.Goods;
+import com.pinyougou.entity.Item;
 import com.pinyougou.pojo.PageResult;
 import com.pinyougou.sellergoods.grouppojo.TbGoods;
 
@@ -75,6 +76,14 @@ public interface GoodsService extends IService<Goods> {
      * @param status
      */
     public void updateStatus(Long []ids,String status);
+
+
+    /**
+     * 根据商品ID和状态查询Item表信息
+     * @param goodsIds
+     * @param status
+     */
+    public List<Item> findItemListByGoodsIdandStatus(Long[] goodsIds, String status );
 
 
 }
