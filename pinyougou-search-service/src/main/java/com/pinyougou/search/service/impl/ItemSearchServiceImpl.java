@@ -2,7 +2,6 @@ package com.pinyougou.search.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.config.ChangeToPinYinJP;
-import com.pinyougou.config.ItemRepository;
 import com.pinyougou.config.MusicRepository;
 import com.pinyougou.mapper.ItemMapper;
 import com.pinyougou.pojo.CopyItem;
@@ -11,13 +10,12 @@ import com.pinyougou.search.service.ItemSearchService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.*;
-import org.springframework.data.solr.core.query.result.FacetFieldEntry;
-import org.springframework.data.solr.core.query.result.FacetPage;
-import org.springframework.data.solr.core.query.result.HighlightEntry;
-import org.springframework.data.solr.core.query.result.HighlightPage;
+import org.springframework.data.solr.core.query.result.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -39,9 +37,6 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     private MusicRepository musicRepository;
 
     @Autowired
-    private ItemRepository itemRepository;
-
-    @Autowired
     private SolrTemplate solrTemplate;
 
     @Autowired
@@ -50,8 +45,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     @Autowired
     private ChangeToPinYinJP changeToPinYinJP;
 
-    @Override
-    public Map<String, Object> search(Map searchMap) {
+    public Map<String, Object> search1(Map searchMap) {
         Map<String, Object> map = new HashMap<>();
         //putAll可以合并两个Map，只不过如果有相同的key那么用后面的覆盖前面的
 
@@ -78,6 +72,24 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 
         return map;
     }
+
+    @Override
+    public Map<String, Object> search(Map searchMap) {
+        Map<String, Object> map = new HashMap<>();
+
+        Pageable pageable = PageRequest.of(0, 20);
+        //按照关键字查询
+        String keywords = searchMap.get("keywords").toString();
+
+        //添加查询条件
+        ScoredPage<CopyItem> page =
+                musicRepository.findByKeywords(keywords,pageable);
+
+        map.put("rows", page.getContent());
+        return map;
+    }
+
+
 
     private Map searchList(Map searchMap) {
 
@@ -236,7 +248,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 
     @Override
     public void importList(List list) {
-        itemRepository.saveAll(list);
+        //itemRepository.saveAll(list);
     }
 
 

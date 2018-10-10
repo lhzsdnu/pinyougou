@@ -16,19 +16,30 @@ public class CopyItem {
     @Field("id")
     private String id;
     @Field("item_title")
-    private String item_title;
+    private String title;
     @Field("item_price")
-    private String item_price;
+    private String price;
     @Field("item_image")
-    private String item_image;
+    private String image;
     @Field("item_goodsId")
-    private Long item_goodsId;
+    private Long goodsId;
     @Field("item_category")
-    private String item_category;
+    private String category;
     @Field("item_brand")
-    private String item_brand;
+    private String brand;
     @Field("item_seller")
-    private String item_seller;
+    private String seller;
+
+    @Field("item_keywords")
+    private String keywords;
+
+    public String getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
 
     @Dynamic
     @Field("item_spec_*")
@@ -40,7 +51,6 @@ public class CopyItem {
         this.specMap = specMap;
     }
 
-
     public String getId() {
         return id;
     }
@@ -49,59 +59,59 @@ public class CopyItem {
         this.id = id;
     }
 
-    public String getItem_title() {
-        return item_title;
+    public String getTitle() {
+        return title;
     }
 
-    public void setItem_title(String item_title) {
-        this.item_title = item_title;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getItem_price() {
-        return item_price;
+    public String getPrice() {
+        return price;
     }
 
-    public void setItem_price(String item_price) {
-        this.item_price = item_price;
+    public void setPrice(String price) {
+        this.price = price;
     }
 
-    public String getItem_image() {
-        return item_image;
+    public String getImage() {
+        return image;
     }
 
-    public void setItem_image(String item_image) {
-        this.item_image = item_image;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public Long getItem_goodsId() {
-        return item_goodsId;
+    public Long getGoodsId() {
+        return goodsId;
     }
 
-    public void setItem_goodsId(Long item_goodsId) {
-        this.item_goodsId = item_goodsId;
+    public void setGoodsId(Long goodsId) {
+        this.goodsId = goodsId;
     }
 
-    public String getItem_category() {
-        return item_category;
+    public String getCategory() {
+        return category;
     }
 
-    public void setItem_category(String item_category) {
-        this.item_category = item_category;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public String getItem_brand() {
-        return item_brand;
+    public String getBrand() {
+        return brand;
     }
 
-    public void setItem_brand(String item_brand) {
-        this.item_brand = item_brand;
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
-    public String getItem_seller() {
-        return item_seller;
+    public String getSeller() {
+        return seller;
     }
 
-    public void setItem_seller(String item_seller) {
-        this.item_seller = item_seller;
+    public void setSeller(String seller) {
+        this.seller = seller;
     }
 }
