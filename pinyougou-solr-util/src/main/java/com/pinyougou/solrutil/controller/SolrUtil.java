@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class SolrUtil{
+public class SolrUtil {
 
 	@Autowired
 	private ItemMapper itemMapper;
