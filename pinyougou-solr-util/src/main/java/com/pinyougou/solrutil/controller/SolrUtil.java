@@ -47,13 +47,13 @@ public class SolrUtil {
 		for(Item item:itemList){
 			CopyItem copyItem=new CopyItem();
 			copyItem.setId(String.valueOf(item.getId()));
-			copyItem.setItem_brand(item.getBrand());
-			copyItem.setItem_category(item.getCategory());
-			copyItem.setItem_goodsId(item.getGoodsId());
-			copyItem.setItem_image(item.getImage());
-			copyItem.setItem_price(item.getPrice().toString());
-			copyItem.setItem_seller(item.getSeller());
-			copyItem.setItem_title(item.getTitle());
+			copyItem.setBrand(item.getBrand());
+			copyItem.setCategory(item.getCategory());
+			copyItem.setGoodsId(item.getGoodsId());
+			copyItem.setImage(item.getImage());
+			copyItem.setPrice(item.getPrice().toString());
+			copyItem.setSeller(item.getSeller());
+			copyItem.setTitle(item.getTitle());
 
 			//将spec字段中的json字符串转换为map
 			Map<String,String> specMap=JSON.parseObject(item.getSpec(),Map.class);

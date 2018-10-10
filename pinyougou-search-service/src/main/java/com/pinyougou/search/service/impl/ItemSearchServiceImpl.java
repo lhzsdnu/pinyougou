@@ -45,7 +45,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     @Autowired
     private ChangeToPinYinJP changeToPinYinJP;
 
-    public Map<String, Object> search1(Map searchMap) {
+    public Map<String, Object> search(Map searchMap) {
         Map<String, Object> map = new HashMap<>();
         //putAll可以合并两个Map，只不过如果有相同的key那么用后面的覆盖前面的
 
@@ -72,24 +72,6 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 
         return map;
     }
-
-    @Override
-    public Map<String, Object> search(Map searchMap) {
-        Map<String, Object> map = new HashMap<>();
-
-        Pageable pageable = PageRequest.of(0, 20);
-        //按照关键字查询
-        String keywords = searchMap.get("keywords").toString();
-
-        //添加查询条件
-        ScoredPage<CopyItem> page =
-                musicRepository.findByKeywords(keywords,pageable);
-
-        map.put("rows", page.getContent());
-        return map;
-    }
-
-
 
     private Map searchList(Map searchMap) {
 

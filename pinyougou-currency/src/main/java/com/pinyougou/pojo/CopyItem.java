@@ -6,11 +6,12 @@ import org.springframework.data.solr.core.mapping.Dynamic;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.Map;
 
 @SolrDocument(solrCoreName = "new_core")//JPA写法
 @Component
-public class CopyItem {
+public class CopyItem implements Serializable {
 
     @Id
     @Field("id")
