@@ -37,7 +37,6 @@ app.controller('itemCatController' ,function($scope,$controller,itemCatService,t
 		var serviceObject;//服务层对象
 
         $scope.entity.typeId=$scope.entity.typeId.id;
-        alert($scope.entity.typeId);
 
 		if($scope.entity.id!=null){//如果有ID
 			serviceObject=itemCatService.update( $scope.entity ); //修改  
