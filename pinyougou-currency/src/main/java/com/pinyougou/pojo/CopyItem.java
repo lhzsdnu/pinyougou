@@ -19,7 +19,7 @@ public class CopyItem implements Serializable {
     @Field("item_title")
     private String title;
     @Field("item_price")
-    private String price;
+    private Double price;
     @Field("item_image")
     private String image;
     @Field("item_goodsId")
@@ -68,11 +68,11 @@ public class CopyItem implements Serializable {
         this.title = title;
     }
 
-    public String getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

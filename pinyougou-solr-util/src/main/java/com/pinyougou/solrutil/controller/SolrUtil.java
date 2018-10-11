@@ -51,7 +51,7 @@ public class SolrUtil {
 			copyItem.setCategory(item.getCategory());
 			copyItem.setGoodsId(item.getGoodsId());
 			copyItem.setImage(item.getImage());
-			copyItem.setPrice(item.getPrice().toString());
+			copyItem.setPrice(item.getPrice().doubleValue());
 			copyItem.setSeller(item.getSeller());
 			copyItem.setTitle(item.getTitle());
 
