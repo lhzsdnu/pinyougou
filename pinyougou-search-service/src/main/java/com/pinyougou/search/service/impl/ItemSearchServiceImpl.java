@@ -1,8 +1,10 @@
 package com.pinyougou.search.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSON;
 import com.pinyougou.config.ChangeToPinYinJP;
 import com.pinyougou.config.MusicRepository;
+import com.pinyougou.entity.Item;
 import com.pinyougou.mapper.ItemMapper;
 import com.pinyougou.pojo.CopyItem;
 import com.pinyougou.redis.RedisUtil;
@@ -46,6 +48,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     @Autowired
     private ChangeToPinYinJP changeToPinYinJP;
 
+    @Override
     public Map<String, Object> search(Map searchMap) {
         Map<String, Object> map = new HashMap<>();
         //putAll可以合并两个Map，只不过如果有相同的key那么用后面的覆盖前面的
@@ -125,28 +128,28 @@ public class ItemSearchServiceImpl implements ItemSearchService {
             }
         }
 
-        Integer pageNo= (Integer) searchMap.get("pageNo");//提取页码
-        if(pageNo==null){
-            pageNo=1;//默认第一页
+        Integer pageNo = (Integer) searchMap.get("pageNo");//提取页码
+        if (pageNo == null) {
+            pageNo = 1;//默认第一页
         }
-        Integer pageSize=(Integer) searchMap.get("pageSize");//每页记录数
-        if(pageSize==null){
-            pageSize=20;//默认20
+        Integer pageSize = (Integer) searchMap.get("pageSize");//每页记录数
+        if (pageSize == null) {
+            pageSize = 20;//默认20
         }
-        query.setOffset(Long.parseLong(String.valueOf(((pageNo-1)*pageSize))));//从第几条记录查询
+        query.setOffset(Long.parseLong(String.valueOf(((pageNo - 1) * pageSize))));//从第几条记录查询
         query.setRows(pageSize);
 
 
         //排序
-        String sortValue= (String) searchMap.get("sort");//ASC  DESC
-        String sortField= (String) searchMap.get("sortField");//排序字段
-        if(sortValue!=null && !sortValue.equals("")){
-            if(sortValue.equals("ASC")){
-                Sort sort=new Sort(Sort.Direction.ASC, "item_"+sortField);
+        String sortValue = (String) searchMap.get("sort");//ASC  DESC
+        String sortField = (String) searchMap.get("sortField");//排序字段
+        if (sortValue != null && !sortValue.equals("")) {
+            if (sortValue.equals("ASC")) {
+                Sort sort = new Sort(Sort.Direction.ASC, "item_" + sortField);
                 query.addSort(sort);
             }
-            if(sortValue.equals("DESC")){
-                Sort sort=new Sort(Sort.Direction.DESC, "item_"+sortField);
+            if (sortValue.equals("DESC")) {
+                Sort sort = new Sort(Sort.Direction.DESC, "item_" + sortField);
                 query.addSort(sort);
             }
         }
@@ -195,10 +198,10 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         FacetPage<CopyItem> groupPage = solrTemplate.queryForFacetPage("new_core", query, CopyItem.class);
 
         //得到分组结果入口页
-        Page<FacetFieldEntry>  groupEntries = groupPage.getFacetResultPage("item_category");
+        Page<FacetFieldEntry> groupEntries = groupPage.getFacetResultPage("item_category");
         //得到分组入口集合
         Iterator<FacetFieldEntry> content = groupEntries.iterator();
-        while(content.hasNext()){
+        while (content.hasNext()) {
             //将分组结果的名称封装到返回值中
             searchList.add(content.next().getValue());
         }
@@ -230,21 +233,47 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     }
 
     @Override
-    public void importList(List list) {
-        //itemRepository.saveAll(list);
-    }
+    public void importList(List<Item> list) {
+        List<CopyItem> copyItemList = new ArrayList<CopyItem>();
+        for (Item item : list) {
+            CopyItem copyItem = new CopyItem();
+            copyItem.setId(String.valueOf(item.getId()));
+            copyItem.setBrand(item.getBrand());
+            copyItem.setCategory(item.getCategory());
+            copyItem.setGoodsId(item.getGoodsId());
+            copyItem.setImage(item.getImage());
+            copyItem.setPrice(item.getPrice().doubleValue());
+            copyItem.setSeller(item.getSeller());
+            copyItem.setTitle(item.getTitle());
 
+            //将spec字段中的json字符串转换为map
+            Map<String, String> specMap = JSON.parseObject(item.getSpec(), Map.class);
+            //changeToPinYinJP.changeToTonePinYinNoSpace();
+            Map<String, String> map = new HashMap<String, String>();
+            for (Map.Entry<String, String> entry : specMap.entrySet()) {
+                String key = changeToPinYinJP.changeToTonePinYinNoSpace(entry.getKey());
+                String value = entry.getValue();
+                map.put(key, value);
+            }
+            //给带注解的字段赋值
+            copyItem.setSpecMap(map);
+
+            copyItemList.add(copyItem);
+
+            musicRepository.saveAll(copyItemList);
+        }
+    }
 
     @Override
     public void deleteByGoodsIds(List goodsIdList) {
-        System.out.println("删除商品ID"+goodsIdList);
-        Query query=new SimpleQuery();
-        Criteria criteria=new Criteria("item_goodsId").in(goodsIdList);
+        System.out.println("删除商品ID" + goodsIdList);
+        Query query = new SimpleQuery();
+        Criteria criteria = new Criteria("item_goodsId").in(goodsIdList);
         query.addCriteria(criteria);
-        solrTemplate.delete("new_core",query);
+        solrTemplate.delete("new_core", query);
         solrTemplate.commit("new_core");
-    }
 
+    }
 
 
 }

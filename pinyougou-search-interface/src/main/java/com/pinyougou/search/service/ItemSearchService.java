@@ -1,5 +1,7 @@
 package com.pinyougou.search.service;
 
+import com.pinyougou.entity.Item;
+
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +14,7 @@ public interface ItemSearchService {
     /**
      * 导入数据
      */
-    public void importList(List list);
+    public void importList(List<Item> list);
 
     /**
      * 删除数据

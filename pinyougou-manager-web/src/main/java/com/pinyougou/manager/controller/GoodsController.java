@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -108,7 +109,7 @@ public class GoodsController {
                 List<Item> itemList = goodsService.findItemListByGoodsIdandStatus(ids, status);
                 //调用搜索接口实现数据批量导入
                 if(itemList.size()>0){
-                    //itemSearchService.importList(itemList);
+                    itemSearchService.importList(itemList);
                 }else{
                     System.out.println("没有明细数据");
                 }
@@ -142,7 +143,7 @@ public class GoodsController {
     public Result delete(Long[] ids) {
         try {
             goodsService.delete(ids);
-            //itemSearchService.deleteByGoodsIds(Arrays.asList(ids));
+            itemSearchService.deleteByGoodsIds(Arrays.asList(ids));
             return new Result(true, "删除成功");
         } catch (Exception e) {
             e.printStackTrace();
