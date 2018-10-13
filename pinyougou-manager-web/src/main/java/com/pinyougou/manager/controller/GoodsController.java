@@ -4,6 +4,7 @@ package com.pinyougou.manager.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.entity.Goods;
 import com.pinyougou.entity.Item;
+import com.pinyougou.page.service.ItemPageService;
 import com.pinyougou.pojo.PageResult;
 import com.pinyougou.pojo.Result;
 import com.pinyougou.search.service.ItemSearchService;
@@ -37,6 +38,11 @@ public class GoodsController {
             application = "${dubbo.application.id}",
             registry = "${dubbo.registry.id}")
     private ItemSearchService itemSearchService;
+
+    @Reference(version = "${demo.service.version}",
+            application = "${dubbo.application.id}",
+            registry = "${dubbo.registry.id}")
+    private ItemPageService itemPageService;
 
 
     /**
@@ -163,5 +169,16 @@ public class GoodsController {
     public PageResult search(@RequestBody Goods goods, int page, int rows) {
         return goodsService.findPage(goods, page, rows);
     }
+
+    /**
+     * 生成静态页（测试）
+     * @param goodsId
+     */
+    @RequestMapping("/genHtml")
+    public void genHtml(Long goodsId){
+        itemPageService.genItemHtml(goodsId);
+    }
+
+
 }
 
