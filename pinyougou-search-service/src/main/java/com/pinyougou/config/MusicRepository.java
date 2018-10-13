@@ -8,11 +8,15 @@ import org.springframework.data.solr.repository.Query;
 import org.springframework.data.solr.repository.SolrCrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MusicRepository extends SolrCrudRepository<CopyItem, String> {
 
     @Facet(fields = {"item_category"})
     @Query(value = "item_keywords:*?0*")
     FacetPage<CopyItem> findByKeywords(String keywords, Pageable pageable);
+
+    void deleteByGoodsIdIn(List<Long> goodsIdList);
 
 }

@@ -20,7 +20,7 @@ public interface ItemSearchService {
      * 删除数据
      * @param goodsIdList
      */
-    public void deleteByGoodsIds(List goodsIdList);
+    public void deleteByGoodsIds(List<Long> goodsIdList);
 
 
 }
