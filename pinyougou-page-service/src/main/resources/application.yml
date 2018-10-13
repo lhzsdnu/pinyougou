@@ -1,0 +1,48 @@
+server:
+  port: 9004
+spring:
+  application:
+    name: pinyougou-page-service
+# 配置freemarker
+  freemarker:
+    # 设置模板后缀名
+    suffix: .ftl
+    # 设置文档类型
+    content-type: text/html
+    # 设置页面编码格式
+    charset: UTF-8
+    # 设置页面缓存,关闭缓存,及时刷新,上线生产环境需要修改为true
+    cache: false
+    # 设置ftl文件路径
+    template-loader-path: classpath:/templates
+    check-template-location: true
+    expose-request-attributes: true
+    expose-session-attributes: true
+    # Freemarker获取项目根路经
+    request-context-attribute: request
+    enabled: true
+  # 设置静态文件路径，js,css等
+  mvc:
+    static-path-pattern: /static/**
+
+
+demo:
+  service:
+    version: 1.0.0
+dubbo:
+  scan:
+    basePackages: com.pinyougou.page.service.impl
+  application:
+    id: pinyougou-page-service
+    name: pinyougou-page-service
+    qos-port: 20004
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 20884
+    threads: 10
+  registry:
+    address: 192.168.200.102:2181
+    id: my-registry4
+    protocol: zookeeper
+    timeout: 30000
