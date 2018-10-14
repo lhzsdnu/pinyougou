@@ -1,5 +1,5 @@
 server:
-  port: 9004
+  port: 9005
 spring:
   application:
     name: pinyougou-page-service
@@ -35,14 +35,14 @@ dubbo:
   application:
     id: pinyougou-page-service
     name: pinyougou-page-service
-    qos-port: 20004
+    qos-port: 20005
   protocol:
     id: dubbo
     name: dubbo
-    port: 20884
+    port: 20885
     threads: 10
   registry:
     address: 192.168.200.102:2181
-    id: my-registry4
+    id: my-registry5
     protocol: zookeeper
     timeout: 30000

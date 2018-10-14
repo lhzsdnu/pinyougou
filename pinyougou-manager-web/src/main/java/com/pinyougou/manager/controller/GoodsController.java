@@ -119,6 +119,11 @@ public class GoodsController {
                 }else{
                     System.out.println("没有明细数据");
                 }
+                //静态页生成
+                for(Long goodsId:ids){
+                    itemPageService.genItemHtml(goodsId);
+                }
+
             }
             return new Result(true, "成功");
         } catch (Exception e) {
