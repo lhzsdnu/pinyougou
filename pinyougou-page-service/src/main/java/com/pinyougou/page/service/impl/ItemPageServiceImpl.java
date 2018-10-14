@@ -5,6 +5,7 @@ import com.pinyougou.entity.Goods;
 import com.pinyougou.entity.GoodsDesc;
 import com.pinyougou.mapper.GoodsDescMapper;
 import com.pinyougou.mapper.GoodsMapper;
+import com.pinyougou.mapper.ItemCatMapper;
 import com.pinyougou.page.service.ItemPageService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -31,7 +32,10 @@ public class ItemPageServiceImpl implements ItemPageService {
 	private GoodsMapper goodsMapper;
 	@Autowired
 	private GoodsDescMapper goodsDescMapper;
-		
+	@Autowired
+	private ItemCatMapper itemCatMapper;
+
+
 	@Override
 	public boolean genItemHtml(Long goodsId){				
 		try {
@@ -44,6 +48,14 @@ public class ItemPageServiceImpl implements ItemPageService {
 			//2.加载商品扩展表数据			
 			GoodsDesc goodsDesc = goodsDescMapper.selectById(goodsId);
 			dataModel.put("goodsDesc", goodsDesc);
+			//3.商品分类
+			String itemCat1 = itemCatMapper.selectById(goods.getCategory1Id()).getName();
+			String itemCat2 = itemCatMapper.selectById(goods.getCategory2Id()).getName();
+			String itemCat3 = itemCatMapper.selectById(goods.getCategory3Id()).getName();
+			dataModel.put("itemCat1", itemCat1);
+			dataModel.put("itemCat2", itemCat2);
+			dataModel.put("itemCat3", itemCat3);
+
 			String path = ClassUtils.getDefaultClassLoader().getResource("").getPath();
 			Writer out=new FileWriter(path+"/static/"+goodsId+".html");
 			template.process(dataModel, out);
