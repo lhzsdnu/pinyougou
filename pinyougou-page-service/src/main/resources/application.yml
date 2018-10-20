@@ -32,8 +32,7 @@ spring:
     user: admin
     password: admin
   jms:
-    pub-sub-domain: false
-
+    pub-sub-domain: true
 
 demo:
   service:

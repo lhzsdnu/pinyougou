@@ -6,22 +6,26 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 
+import javax.jms.ConnectionFactory;
+
 @Configuration
 public class MqConfig {
 
     @Bean
-    public JmsListenerContainerFactory<?> jmsListenerContainerTopic(ActiveMQConnectionFactory connectionFactory) {
-        DefaultJmsListenerContainerFactory bean = new DefaultJmsListenerContainerFactory();
-        bean.setPubSubDomain(true);
-        bean.setConnectionFactory(connectionFactory);
-        return bean;
+    public ConnectionFactory connectionFactory(){
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
+        connectionFactory.setBrokerURL("tcp://192.168.200.102:61616");
+        connectionFactory.setUserName("admin");
+        connectionFactory.setPassword("admin");
+        return connectionFactory;
+
     }
 
     @Bean
-    public JmsListenerContainerFactory<?> jmsListenerContainerQueue(ActiveMQConnectionFactory connectionFactory) {
+    public JmsListenerContainerFactory<?> jmsListenerContainerTopic() {
         DefaultJmsListenerContainerFactory bean = new DefaultJmsListenerContainerFactory();
-        bean.setPubSubDomain(false);
-        bean.setConnectionFactory(connectionFactory);
+        bean.setPubSubDomain(true);
+        bean.setConnectionFactory(connectionFactory());
         return bean;
     }
 }
