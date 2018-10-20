@@ -2,19 +2,22 @@ package com.pinyougou.manager.controller;
 
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
 import com.pinyougou.entity.Goods;
 import com.pinyougou.entity.Item;
 import com.pinyougou.page.service.ItemPageService;
 import com.pinyougou.pojo.PageResult;
 import com.pinyougou.pojo.Result;
-import com.pinyougou.search.service.ItemSearchService;
 import com.pinyougou.sellergoods.grouppojo.TbGoods;
 import com.pinyougou.sellergoods.service.GoodsService;
+import org.apache.activemq.command.ActiveMQQueue;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
+import javax.jms.Destination;
 import java.util.List;
 
 /**
@@ -33,11 +36,6 @@ public class GoodsController {
             application = "${dubbo.application.id}",
             registry = "${dubbo.registry.id}")
     private GoodsService goodsService;
-
-    @Reference(version = "${demo.service.version}",
-            application = "${dubbo.application.id}",
-            registry = "${dubbo.registry.id}")
-    private ItemSearchService itemSearchService;
 
     @Reference(version = "${demo.service.version}",
             application = "${dubbo.application.id}",
@@ -100,6 +98,10 @@ public class GoodsController {
         }
     }
 
+    @Autowired
+    // 也可以注入JmsTemplate，JmsMessagingTemplate对JmsTemplate进行了封装
+    private JmsMessagingTemplate jmsTemplate;
+
     /**
      * 更新状态
      *
@@ -111,16 +113,22 @@ public class GoodsController {
         try {
             goodsService.updateStatus(ids, status);
             //按照SPU ID查询 SKU列表(状态为1)
-            if(status.equals("1")){//审核通过
+            if (status.equals("1")) {//审核通过
                 List<Item> itemList = goodsService.findItemListByGoodsIdandStatus(ids, status);
                 //调用搜索接口实现数据批量导入
-                if(itemList.size()>0){
-                    itemSearchService.importList(itemList);
-                }else{
+                if (itemList.size() > 0) {
+                    //itemSearchService.importList(itemList);
+                    Destination destination = new ActiveMQQueue("pinyougou_queue_solr");
+                    final String jsonString = JSON.toJSONString(itemList);
+                    //发送消息，destination是发送到的队列，message是待发送的消息
+                    //jmsTemplate.convertAndSend(destination, message);
+                    jmsTemplate.convertAndSend(destination, jsonString);
+
+                } else {
                     System.out.println("没有明细数据");
                 }
                 //静态页生成
-                for(Long goodsId:ids){
+                for (Long goodsId : ids) {
                     itemPageService.genItemHtml(goodsId);
                 }
 
@@ -154,7 +162,10 @@ public class GoodsController {
     public Result delete(Long[] ids) {
         try {
             goodsService.delete(ids);
-            itemSearchService.deleteByGoodsIds(Arrays.asList(ids));
+            Destination destination = new ActiveMQQueue("pinyougou_queue_solr_delete");
+
+            jmsTemplate.convertAndSend(destination, ids);
+
             return new Result(true, "删除成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -177,10 +188,11 @@ public class GoodsController {
 
     /**
      * 生成静态页（测试）
+     *
      * @param goodsId
      */
     @RequestMapping("/genHtml")
-    public void genHtml(Long goodsId){
+    public void genHtml(Long goodsId) {
         itemPageService.genItemHtml(goodsId);
     }
 
