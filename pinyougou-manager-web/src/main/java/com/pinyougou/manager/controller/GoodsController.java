@@ -5,12 +5,12 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
 import com.pinyougou.entity.Goods;
 import com.pinyougou.entity.Item;
-import com.pinyougou.page.service.ItemPageService;
 import com.pinyougou.pojo.PageResult;
 import com.pinyougou.pojo.Result;
 import com.pinyougou.sellergoods.grouppojo.TbGoods;
 import com.pinyougou.sellergoods.service.GoodsService;
 import org.apache.activemq.command.ActiveMQQueue;
+import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,11 +36,6 @@ public class GoodsController {
             application = "${dubbo.application.id}",
             registry = "${dubbo.registry.id}")
     private GoodsService goodsService;
-
-    @Reference(version = "${demo.service.version}",
-            application = "${dubbo.application.id}",
-            registry = "${dubbo.registry.id}")
-    private ItemPageService itemPageService;
 
 
     /**
@@ -129,7 +124,9 @@ public class GoodsController {
                 }
                 //静态页生成
                 for (Long goodsId : ids) {
-                    itemPageService.genItemHtml(goodsId);
+                    Destination destination = new ActiveMQTopic("pinyougou_topic_page");
+                    //发送消息，destination是发送到的队列，message是待发送的消息
+                    jmsTemplate.convertAndSend(destination, goodsId);
                 }
 
             }
@@ -163,8 +160,10 @@ public class GoodsController {
         try {
             goodsService.delete(ids);
             Destination destination = new ActiveMQQueue("pinyougou_queue_solr_delete");
-
             jmsTemplate.convertAndSend(destination, ids);
+            Destination destination2 = new ActiveMQTopic("pinyougou_topic_page_delete");
+            jmsTemplate.convertAndSend(destination2, ids);
+
 
             return new Result(true, "删除成功");
         } catch (Exception e) {
@@ -184,16 +183,6 @@ public class GoodsController {
     @RequestMapping("/search")
     public PageResult search(@RequestBody Goods goods, int page, int rows) {
         return goodsService.findPage(goods, page, rows);
-    }
-
-    /**
-     * 生成静态页（测试）
-     *
-     * @param goodsId
-     */
-    @RequestMapping("/genHtml")
-    public void genHtml(Long goodsId) {
-        itemPageService.genItemHtml(goodsId);
     }
 
 

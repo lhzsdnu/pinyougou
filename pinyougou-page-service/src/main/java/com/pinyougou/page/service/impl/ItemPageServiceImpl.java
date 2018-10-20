@@ -1,6 +1,5 @@
 package com.pinyougou.page.service.impl;
 
-import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.pinyougou.entity.Goods;
@@ -14,25 +13,24 @@ import com.pinyougou.page.service.ItemPageService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.annotation.JmsListener;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfig;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service(
-        version = "${demo.service.version}",
-        application = "${dubbo.application.id}",
-        protocol = "${dubbo.protocol.id}",
-        registry = "${dubbo.registry.id}"
-)
+@Service
 public class ItemPageServiceImpl implements ItemPageService {
 
     @Autowired
     private FreeMarkerConfig freeMarkerConfig;
+
     @Autowired
     private GoodsMapper goodsMapper;
     @Autowired
@@ -41,6 +39,33 @@ public class ItemPageServiceImpl implements ItemPageService {
     private ItemCatMapper itemCatMapper;
     @Autowired
     private ItemMapper itemMapper;
+
+
+    @JmsListener(destination = "pinyougou_topic_page",containerFactory="jmsListenerContainerTopic")
+    public void receiveTopic(Long goodsId) {
+        try {
+            System.out.println("接收到消息："+goodsId);
+            boolean b = this.genItemHtml(goodsId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @JmsListener(destination = "pinyougou_topic_page_delete",containerFactory="jmsListenerContainerTopic")
+    public boolean deleteItemHtml(Long[] goodsIds) {
+        try {
+            for(Long goodsId:goodsIds){
+                String path = ClassUtils.getDefaultClassLoader().getResource("").getPath();
+                new File(path + "/static/" +goodsId+".html").delete();
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 
 
     @Override

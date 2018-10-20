@@ -24,25 +24,17 @@ spring:
   # 设置静态文件路径，js,css等
   mvc:
     static-path-pattern: /static/**
+  activemq:
+    broker-url: tcp://192.168.200.102:61616
+    in-memory: true
+    pool:
+      enabled: true
+    user: admin
+    password: admin
+  jms:
+    pub-sub-domain: false
 
 
 demo:
   service:
     version: 1.0.0
-dubbo:
-  scan:
-    basePackages: com.pinyougou.page.service.impl
-  application:
-    id: pinyougou-page-service
-    name: pinyougou-page-service
-    qos-port: 20005
-  protocol:
-    id: dubbo
-    name: dubbo
-    port: 20885
-    threads: 10
-  registry:
-    address: 192.168.200.102:2181
-    id: my-registry5
-    protocol: zookeeper
-    timeout: 30000
