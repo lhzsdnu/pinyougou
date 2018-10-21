@@ -1,0 +1,35 @@
+spring:
+  mail:
+    port: 25
+    username: 15275182251@163.com
+    password: luan09306313
+    protocol: smtp
+    default-encoding: utf-8
+    host: smtp.163.com
+  # 配置freemarker
+  freemarker:
+    # 设置模板后缀名
+    suffix: .ftl
+    # 设置文档类型
+    content-type: text/html
+    # 设置页面编码格式
+    charset: UTF-8
+    # 设置页面缓存,关闭缓存,及时刷新,上线生产环境需要修改为true
+    cache: false
+    # 设置ftl文件路径
+    template-loader-path: classpath:/templates
+    check-template-location: true
+    expose-request-attributes: true
+    expose-session-attributes: true
+    # Freemarker获取项目根路经
+    request-context-attribute: request
+    enabled: true
+  activemq:
+    broker-url: tcp://192.168.200.102:61616
+    in-memory: true
+    pool:
+      enabled: true
+    user: admin
+    password: admin
+  jms:
+    pub-sub-domain: false
