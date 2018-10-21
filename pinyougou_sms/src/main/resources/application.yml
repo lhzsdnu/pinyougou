@@ -1,3 +1,4 @@
+
 spring:
   mail:
     port: 25
@@ -33,3 +34,5 @@ spring:
     password: admin
   jms:
     pub-sub-domain: false
+server:
+  port: 9003
