@@ -1,0 +1,35 @@
+server:
+  port: 9006
+spring:
+  application:
+    name: pinyougou-user-service
+  activemq:
+      broker-url: tcp://192.168.200.102:61616
+      in-memory: true
+      pool:
+        enabled: true
+      user: admin
+      password: admin
+  jms:
+    pub-sub-domain: false
+
+demo:
+  service:
+    version: 1.0.0
+dubbo:
+  scan:
+    basePackages: com.pinyougou.user.service.impl
+  application:
+    id: pinyougou-user-service
+    name: pinyougou-user-service
+    qos-port: 20006
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 20886
+  registry:
+    address: 192.168.200.102:2181
+    id: my-registry6
+    protocol: zookeeper
+    timeout: 30000
+
