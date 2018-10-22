@@ -20,11 +20,12 @@ public class SmsListener {
     @JmsListener(destination = "smsDestination")
     public void sendSms(Map<String, String> map) {
         try {
-            String code = map.get("mobile");
+            String code = map.get("code");
+            String toUser=map.get("phone");
             System.out.println("验证码为：" + code);
             Message message = new Message();
             message.setCode(code);
-            mailService.sendMessageMail(message, "测试消息通知", "message.ftl","2383376138@qq.com");
+            mailService.sendMessageMail(message, "测试消息通知", "message.ftl",toUser);
         } catch (Exception e) {
             e.printStackTrace();
         }

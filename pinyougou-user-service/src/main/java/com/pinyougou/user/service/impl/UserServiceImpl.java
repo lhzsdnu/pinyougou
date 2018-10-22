@@ -1,4 +1,4 @@
-package com.pinyougou.user.serive.impl;
+package com.pinyougou.user.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -17,7 +17,9 @@ import org.springframework.jms.core.JmsMessagingTemplate;
 
 import javax.jms.Destination;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -208,7 +210,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Destination destination = new ActiveMQQueue("smsDestination");
         //发送消息，destination是发送到的队列，message是待发送的消息
         //jmsTemplate.convertAndSend(destination, message);
-        jmsTemplate.convertAndSend(destination, code);
+        Map<String, String> map=new HashMap<String, String>();
+        map.put("phone",phone);
+        map.put("code",code);
+        jmsTemplate.convertAndSend(destination, map);
     }
 
     /**
