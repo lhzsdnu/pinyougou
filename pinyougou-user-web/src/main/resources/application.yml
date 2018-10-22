@@ -1,0 +1,21 @@
+demo:
+  service:
+    version: 1.0.0
+dubbo:
+  application:
+    id: pinyougou-user-web
+    name: pinyougou-user-web
+    qos-port: 20106
+  protocol:
+    id: dubbo
+    name: dubbo
+  registry:
+    address: 192.168.200.102:2181
+    id: my-consumer6
+    protocol: zookeeper
+    timeout: 30000
+server:
+  port: 9106
+spring:
+  application:
+    name: pinyougou-user-web
