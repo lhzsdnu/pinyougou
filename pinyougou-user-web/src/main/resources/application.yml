@@ -19,3 +19,18 @@ server:
 spring:
   application:
     name: pinyougou-user-web
+
+app:
+  server:
+    host:
+      url: http://leannain.com:9106
+  logout:
+    url: /logout
+  login:
+    url: /login
+cas:
+  server:
+    host:
+      logout_url: ${cas.server.host.url}/logout?service=${app.server.host.url}
+      login_url: ${cas.server.host.url}/login
+      url: https://leannain.com:8443/cas
