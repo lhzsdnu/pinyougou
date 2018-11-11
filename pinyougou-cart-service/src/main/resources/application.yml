@@ -1,0 +1,26 @@
+server:
+  port: 9007
+spring:
+  application:
+    name: pinyougou-cart-service
+
+demo:
+  service:
+    version: 1.0.0
+dubbo:
+  scan:
+    basePackages: com.pinyougou.cart.service.impl
+  application:
+    id: pinyougou-cart-service
+    name: pinyougou-cart-service
+    qos-port: 20007
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 20887
+  registry:
+    address: 192.168.200.102:2181
+    id: my-registry7
+    protocol: zookeeper
+    timeout: 30000
+
