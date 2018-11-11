@@ -1,0 +1,36 @@
+demo:
+  service:
+    version: 1.0.0
+dubbo:
+  application:
+    id: pinyougou-cart-web
+    name: pinyougou-cart-web
+    qos-port: 20107
+  protocol:
+    id: dubbo
+    name: dubbo
+  registry:
+    address: 192.168.200.102:2181
+    id: my-consumer7
+    protocol: zookeeper
+    timeout: 30000
+server:
+  port: 9107
+spring:
+  application:
+    name: pinyougou-cart-web
+
+app:
+  server:
+    host:
+      url: http://leannain.com:9107
+  logout:
+    url: /logout
+  login:
+    url: /login
+cas:
+  server:
+    host:
+      logout_url: ${cas.server.host.url}/logout?service=${app.server.host.url}
+      login_url: ${cas.server.host.url}/login
+      url: https://leannain.com:8443/cas
